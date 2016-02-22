@@ -70,7 +70,8 @@ li.eclookup-itemsearch {
   cursor: pointer;
   margin: 0;
   padding: 3px 3px 3px 10px;
-  border-bottom: 1px solid #CFCFCF; }
+  border-bottom: 1px solid #CFCFCF;
+  background-color: #fff; }
   li.eclookup-itemsearch:hover {
     background-color: #CFCFCF; }
 
