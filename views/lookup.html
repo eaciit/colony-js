@@ -1,0 +1,17 @@
+<div class="col-md-12">
+	<label class="col-md-1 filter-label">Employee 1</label>
+	<div class="col-md-4">
+		<input type="text" id="exampleLookup1" />
+	</div>
+	<label class="col-md-1 filter-label">Employee 2</label>
+	<div class="col-md-4">
+		<input type="text" id="exampleLookup2" />
+	</div>
+</div>
+
+<script>
+	// $('#exampleLookup1').ecLookup('asd',{coba:'asdsad', abc:'ddd'});
+	$('#exampleLookup1').ecLookup({dataSource:{data:[{id:1,name:'arfian'},{id:2,name:'bagus'}]}, inputType: 'name', idField: 'id', idText: 'name', displayFields: 'name'});
+	$('#exampleLookup2').ecLookup({dataSource:{data:[{id:1,name:'css'},{id:2,name:'js'},{id:3,name:'html'},{id:4,name:'xhtml'}]}, inputType: 'name', idField: 'id', idText: 'name', displayFields: 'name'});
+	$('#exampleLookup3').ecLookup({dataSource:{data:['pppp','oooo']}, inputType: '', idField: '', idText: '', displayFields: ''});
+</script>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>EACIIT Colony JS</title>
+		<script>var viewModel = {};</script>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<script src="/res/js/jquery/jquery-2.1.0.min.js"></script>
+		<script src="/res/js/jquery/jquery-ui.min.js"></script>
+		<script src="/res/js/knockout/knockout-3.4.0.js"></script>
+		<script src="/res/js/knockout/knockout.mapping.js"></script>
+
+		<script src="/res/js/bootstrap/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/res/js/bootstrap/css/bootstrap.min.css" />
+
+		<script src="/res/core/app.js"></script>
+		<link rel="stylesheet" href="/res/core/style.css" />
+		
+		<script src="/res/js/eccolony.js"></script>
+		<link rel="stylesheet" href="/res/css/eccolony.css" />
+	</head>
+	<body data-bind="with: viewModel">
+		<div class="navbar navbar-fixed-top">
+			<div class="container-fluid" id="header">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">
+						<img src="/res/img/logoeaciittrans.png" class="headimage">
+						<p class="headlogo">Colony JS</p>
+					</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#">
+							<i class="fa fa-user"></i>
+							Account
+						</a></li>
+					</ul>
+				</div>
+				<div class="clearfix"></div>				
+			</div>
+
+			<div class="navbar-collapse collapse" id="nav">
+				<div class="container-fluid">
+					<ul class="nav navbar-nav">
+						<li class="active">
+							<a href="/colony/index">Dashboard</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" id="container">
+			<div class="row">
+				{{.Content}}
+			</div>
+		</div>
+
+		<script type="text/javascript">
+		    // ko.applyBindings(viewModel);
+		</script>
+	</body>
+</html>
