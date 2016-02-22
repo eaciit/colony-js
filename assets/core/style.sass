@@ -1,0 +1,526 @@
+/** general stylesheet */
+
+$black: #5F5F5F
+$blue: #3A8BDF
+$blue-hover: #4F9AE6
+$green: #5cb85c
+$green-hover: #449d44
+$red: #d9534f
+$red-hover: #c9302c
+$orange: #f0ad4e
+$orange-hover: #ec971f
+
+html, body, #container, #container > .row, #sidebar, #content
+	height: 100%
+	
+a
+	cursor: pointer
+	color: $blue
+
+	&:hover
+		color: $blue-hover
+
+.btn-primary
+	background-color: $blue
+	border-color: #3282D6
+
+	&:hover
+		background-color: $blue-hover
+		border-color: #3282D6
+
+.color-blue
+	color: $blue
+.color-green
+	color: $green
+.color-red
+	color: $red
+.color-orange
+	color: $orange
+
+.btn-text-primary, .btn-text-success, .btn-text-warning, .btn-text-danger
+	background-color: white
+	border-color: #DADADA
+
+	&:hover
+		border-color: #DADADA
+
+.btn-text-primary
+	color: $blue
+
+	&:hover
+		color: $blue-hover
+.btn-text-success
+	color: $green
+
+	&:hover
+		color: $green-hover
+.btn-text-warning
+	color: $orange
+
+	&:hover
+		color: $orange-hover
+.btn-text-danger
+	color: $red
+
+	&:hover
+		color: $red-hover
+
+.form-control.disabled, fieldset.disabled .form-control
+	cursor: not-allowed
+
+.form-control.disabled, .form-control.readonly, fieldset.disabled .form-control
+	background-color: #eee
+	opacity: 1
+
+
+.align-right
+	text-align: right
+.align-center
+	text-align: center
+.align-left
+	text-align: left
+
+table.table
+	tr:hover
+		td
+			background-color: #E8F3FF
+
+.no-padding
+	padding: 0px
+	margin: 0px
+
+.form-row .row
+	margin-bottom: 10px
+
+.form-action
+	margin-top: 10px
+	margin-bottom: 10px
+
+.sub-title-content
+	color: #5F5F5F
+	font-size: 15px
+	font-weight: bold
+
+.vv-padding-right
+	padding-right: 0px
+
+.vv-padding-left
+	padding-left: 0px
+
+.full-width
+	width: 100%
+
+.filter-label
+	line-height: 25px
+	text-align: right
+
+	&:after
+		content: ":"
+		position: absolute
+		right: 5px
+
+.inspectElement >ul li.active
+	background: #EAFFF9
+	padding-left: 0px
+	border: 1px solid #00C3EF
+	cursor: pointer
+
+.inspectElement
+	overflow-y: scroll
+	height: 400px
+
+.inspectElement >ul li:hover
+	padding-left: 0px
+	border: 1px solid #3A8BDF
+	cursor: pointer
+
+.inspectElement>ul
+	list-style-type: 'none'
+	margin-left: 0px
+	padding-left: 0px
+
+.action-button
+	margin-bottom: 10px
+
+.pcustom
+	font-weight: bold
+	font-size: 15px
+
+.btnsrvcustom
+	width: 120px
+	border-radius: 0px
+
+.bd0
+	border-radius: 0px
+
+.mg0
+	margin: 0px !important
+
+.bdcolornone
+	border-color: transparent !important
+.headercustom
+	height: 32px
+	background-color: #3A8BDF
+
+.pdTop6
+	padding-top: 6px
+	color: white
+
+.bd1
+	border: solid 1px
+
+.tvcustom
+	margin: 20px 0 0
+
+.tacustom
+	margin: 15px 0
+	resize: none
+
+.inputcustom
+	height: 25px
+	margin-top: 2px
+
+.demo-section
+	display: inline-block
+	vertical-align: top
+	text-align: left
+	margin: 0 2em
+
+.headlogo, .headimage
+	float: left
+
+.headimage
+	margin-top: -17px
+
+.btn2
+	margin-left: 15%
+
+.nav1
+	padding-top: 1%
+
+.lbl
+	margin-left: -9%
+
+.intext
+	width: 100%
+	height: 350px
+
+.btn-file
+	position: relative
+	overflow: hidden
+
+.btn-file input[type=file]
+	position: absolute
+	top: 0
+	right: 0
+	min-width: 100%
+	min-height: 100%
+	font-size: 100px
+	text-align: right
+	filter: alpha(opacity=0)
+	opacity: 0
+	outline: none
+	background: white
+	cursor: inherit
+	display: block
+
+.nav2
+	margin-top: 2%
+
+.btn-upload
+	margin-left: 10%
+
+.col-100
+	width: 100%
+
+#myTab
+	margin-bottom: 2%
+
+#trv-save
+	float: right
+
+.bgcustom
+	padding: 10px 15px
+	margin-left: 15px
+	width: 300px
+
+/** structured stylesheet */
+
+body
+	padding-top: 86px
+	font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif
+	font-size: 12px
+	line-height: 1.42857143
+	color: #333
+
+	> .navbar
+		background-color: white
+		box-shadow: 0 2px 2px rgba(0,0,0,0.05),0 1px 0 rgba(0, 0, 0, 0.05)
+		border-bottom: none
+
+	#header
+		.navbar-brand
+			font-family: "Open Sans"
+			font-weight: bold
+			color: $black
+
+	#nav
+		background-color: $blue
+
+		.nav.navbar-nav
+			> li 
+				> a
+					padding: 8px 14px
+					color: white
+					background-image: none
+					box-shadow: none
+					text-shadow: none
+					font-size: 13px
+
+					&:hover, &:focus
+						background-color: inherit
+
+				ul
+					border: none
+
+				&.active, &.open, &:hover
+					> a
+						background-color: $blue-hover
+
+	#sidebar
+		border-right: 1px solid #E8E8E8
+
+		.nav
+			li
+				a
+					color: $black
+				
+					&.active
+						background-color: #eee
+						text-decoration: none
+
+	#content
+		padding: 0px
+
+		> .col-md-12 
+			> h1
+				border-bottom: 1px solid #E8E8E8
+				padding-bottom: 5px
+				font-size: 24px
+				font-weight: 600
+				background-color: #f6f8f8
+				margin: 0 -15px 5px
+				padding: 13px 15px
+				color: $black
+
+			.navbar
+				border-radius: 0px
+				margin-bottom: 5px
+
+				&.no-padding
+					margin: 0px !important
+					padding: 0px !important
+
+				.navbar-btn
+					margin-right: 2px
+
+			.panel
+				border: 1px solid #ccc
+				box-shadow: none
+
+				.panel-heading
+					background-color: transparent
+					border-bottom: none
+					padding-bottom: 0px
+
+				
+
+				h1
+					color: $black
+					font-weight: 600
+					padding-bottom: 4px
+					border-bottom: 1px solid whitesmoke
+					font-size: 20px
+
+				.form-datasource 
+					.title-command
+						border-bottom: 1px solid #DDDDDD
+						width: 100%
+						text-align: left
+						padding-bottom: 2px
+						margin-bottom: 12px
+
+					.nav-command
+						border-right: 1px solid #DDDDDD
+
+						.nav li a 
+							padding: 6px 10px
+							background-color: #FBFBFB
+							margin-bottom: 3px
+							border-radius: 4px
+							border: 1px solid whitesmoke
+							color: #5F5F5F
+
+							&:hover
+								background-color: $blue
+								color: whitesmoke
+						
+					.area-command
+						textarea
+							width: 100%
+							height: 150px
+
+						ul.token-input-list-facebook
+							width: 100%
+							border: 1px solid #DDDDDD
+							padding: 4px
+							min-height: 100px
+
+							.token-input-token-facebook
+								height : 120px
+								padding: 2px 5px
+								background-color: $blue
+								color: #FFF
+								border: 1px solid $blue
+
+								span
+									color: #FFFFFF
+
+								&:hover
+									background-color: white
+									color: $black
+
+									span
+										color: #3A8BDF
+
+				#datasource-settings
+					thead tr th
+						padding-top: 15px
+					tbody tr td 
+						padding-top: 8px
+						padding-right: 5px 
+
+				#grid-metadata
+					tr.has-lookup
+						td
+							font-weight: bold
+
+				.grid-service
+					tr
+						td
+							.btn-start
+								display: inherit
+							.btn-stop
+								display: none
+
+							&.scrapper-status
+								background-color: #D9534F
+								position: relative
+
+								span:after
+									content: "STOPPED"
+									position: absolute
+									top: 10px
+									right: 0
+									bottom: 0
+									left: 0
+									text-align: center
+									color: white
+
+						&.started
+							td
+								.btn-start
+									display: none
+								.btn-stop
+									display: inherit
+
+								&.scrapper-status
+									background-color: #5CB85C
+
+									span:after
+										content: "STARTED"
+
+			.nav.nav-tabs
+				li:hover
+					cursor: pointer
+					
+			.navbar-button
+				padding: 14px
+
+			.bg-notif
+				padding: 8px 10px
+				width: 100%
+				margin: 0
+				margin-bottom: 15px
+
+	.modal-query
+		.modal-title
+			span
+				font-weight: bold
+				color: $blue
+
+	#content-preview
+		border: 1px solid whitesmoke
+		min-height: 500px
+
+	.loader-container
+		position: fixed
+		top: 0
+		left: 0
+		right: 0
+		bottom: 0
+		background-color: rgba(255, 255, 255, 0.6)
+		
+		.loader
+			position: absolute
+			margin-left: -25px
+			margin-top: -25px
+			top: 50%
+			left: 50%
+			-webkit-transform: translate(-50%, -50%)
+			transform: translate(-50%, -50%)
+			width: 50px
+			height: 50px
+			background-color: #03a9f4
+			border-radius: 50%
+			&:after
+				content: ''
+				position: absolute
+				border-radius: 50%
+				top: 50%
+				left: 50%
+				border: 0px solid white
+				-webkit-transform: translate(-50%, -50%)
+				transform: translate(-50%, -50%)
+				-webkit-animation: loading 1000ms ease-out forwards infinite
+				animation: loading 1000ms ease-out forwards infinite
+
+
+@-webkit-keyframes loading
+	0%
+		border: 0px solid white
+
+	20%
+		border: 8px solid white
+		width: 0%
+		height: 0%
+
+	100%
+		border: 8px solid white
+		width: 100%
+		height: 100%
+
+
+@keyframes loading
+	0%
+		border: 0px solid white
+
+	20%
+		border: 8px solid white
+		width: 0%
+		height: 0%
+
+	100%
+		border: 8px solid white
+		width: 100%
+		height: 100%
