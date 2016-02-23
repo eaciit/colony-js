@@ -75,4 +75,41 @@ li.eclookup-itemsearch {
   li.eclookup-itemsearch:hover {
     background-color: #CFCFCF; }
 
+div.eclookup-detail {
+  width: 100%;
+  padding: 8px;
+  display: none;
+  border: 1px solid #e6e6e6;
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+div.eclookup-detail-search > span {
+  font-size: 12px;
+  font-weight: bold; }
+
+div.eclookup-detail-search > input {
+  border: 1px solid #DBDADA;
+  width: 65%;
+  margin-right: 5px;
+  padding: 5px; }
+
+div.eclookup-detail-data {
+  margin-top: 10px;
+  width: 100%; }
+
+table.eclookup-table {
+  width: 100%;
+  border-bottom: 1px solid #DBDADA;
+  border-left: 1px solid #DBDADA;
+  border-right: 1px solid #DBDADA; }
+
+table.eclookup-table th {
+  border: 1px solid #DBDADA;
+  text-align: center;
+  padding: 2px; }
+
+table.eclookup-table td {
+  padding: 2px;
+  text-align: center; }
+
 /*# sourceMappingURL=eccolony.css.map */
