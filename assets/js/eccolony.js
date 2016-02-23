@@ -13,6 +13,24 @@ $(function() {
 	});
 });
 
+var KEY = {
+	BACKSPACE    : 8,
+	TAB          : 9,
+	ENTER        : 13,
+	ESCAPE       : 27,
+	SPACE        : 32,
+	PAGE_UP      : 33,
+	PAGE_DOWN    : 34,
+	END          : 35,
+	HOME         : 36,
+	LEFT         : 37,
+	UP           : 38,
+	RIGHT        : 39,
+	DOWN         : 40,
+	NUMPAD_ENTER : 108,
+	COMMA        : 188
+};
+
 var Settings_EcLookup = {
 	dataSource: {data:[]},
 	inputType: 'value',
@@ -20,8 +38,9 @@ var Settings_EcLookup = {
 	idText: 'value',
 	displayFields: 'value',
 	placeholder: 'Input Type Here !',
-	displayTemplate: function(item){
-		console.log(item);
+	minChar: 0,
+	displayTemplate: function(){
+		return "";
 	},
 };
 var Setting_DataSource = {
@@ -40,7 +59,7 @@ var Setting_DataSource = {
 		return res;
 	},
 	dataTemp: [],
-	dataSelect: [],
+	dataSelect: []
 };
 var methodsLookup = {
 	init: function(options){
@@ -60,19 +79,6 @@ var methodsLookup = {
 		$ulLookup = $('<ul class="eclookup-list"></ul>');
 		$ulLookup.appendTo($container);
 
-		// for (var i=0; i < 6; i++){
-		// 	$liLookup = $('<li class="eclookup-item"></li>');
-		// 	$liLookup.appendTo($ulLookup);
-
-		// 	$titleLookup = $('<p></p>');
-		// 	$titleLookup.html('aaaaaaa');
-		// 	$titleLookup.appendTo($liLookup);
-
-		// 	$btnRemoveLookup = $('<span class="eclookup-remove"></span>');
-		// 	$btnRemoveLookup.html('x');
-		// 	$btnRemoveLookup.appendTo($liLookup);
-		// }
-
 		$liLookupTxt = $('<li class="eclookup-txt"></li>');
 		$liLookupTxt.appendTo($ulLookup);
 
@@ -80,7 +86,15 @@ var methodsLookup = {
 		$textSearch.attr({'placeholder': options.placeholder});
 		$textSearch.bind('keyup keydown').keyup(function(event){
 			var search = $(this).val();
-			$o.data('ecLookup').searchResult(search);
+			switch(event.keyCode) {
+				case KEY.BACKSPACE:
+					$o.data('ecLookup').searchResult(search);
+					break;
+				default:
+					if (search.length >= options.minChar){
+						$o.data('ecLookup').searchResult(search);
+					}
+			}
 		});
 		$textSearch.appendTo($liLookupTxt);
 
@@ -89,10 +103,25 @@ var methodsLookup = {
 
 		$ulDropdown = $('<ul class="eclookup-listsearch"></ul>');
 		$ulDropdown.appendTo($divDropdown);
-		// for (var i=0; i < 6; i++){
-		// 	$liContentSearch = $('<li class="eclookup-itemsearch">asdadasdsd</li>');
-		// 	$liContentSearch.appendTo($ulDropdown);
-		// }
+
+		$divDetailLookup = $('<div class="eclookup-detail"></div>');
+		$divDetailLookup.appendTo($container);
+
+		$divSearch = $('<div class="eclookup-detail-search"></div>');
+		$divSearch.html('<span>Search : </span>&nbsp;');
+		$divSearch.appendTo($divDetailLookup);
+
+		$inputSearch = $('<input type="text"/>');
+		$inputSearch.appendTo($divSearch);
+
+		$buttonRefresh = $('<button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>');
+		$buttonRefresh.appendTo($divSearch);
+
+		$divDetailData = $('<div class="eclookup-detail-data"></div>');
+		$divDetailData.appendTo($divDetailLookup);
+
+		$tableData = $('<table class="eclookup-table"></table>');
+		$tableData.appendTo($divDetailData);
 	},
 	get: function() {
 		var idLookup = $(this).attr('id');
@@ -110,25 +139,27 @@ $.fn.ecLookup = function (method) {
 $.ecDataSource = function(element,options){
 	var elementLookup = element, chooseData = 'data';
 	this.ParamDataSource = options;
-	this.getUrlData = function(){
+	this.getUrlData = function(query){
+		var dataPost = {};
+		dataPost[this.ParamDataSource.callData] = query;
 		$.ajax({
 			url: this.ParamDataSource.url,
 			type: this.ParamDataSource.call,
 			dataType: 'json',
 			contentType: 'application/json; charset=utf-8',
-			data: this.ParamDataSource.callData,
+			data: dataPost,
 			success: function (a) {
 				$(elementLookup).data('ecLookup').ParamDataSource.callOK(a);
 				var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData(a), dataTemp = $(elementLookup).data('ecLookup').ParamDataSource.dataTemp;
 				$(elementLookup).data('ecLookup').ParamDataSource.dataTemp = dataTemp.concat(resultdata);
 
-				$(elementLookup).data('ecLookup').resultSearchData(resultdata);
+				$(elementLookup).data('ecLookup').resultSearchData(resultdata, '');
 				// return resultdata;
 			},
 			error: function (a, b, c) {
 				$(elementLookup).data('ecLookup').ParamDataSource.callFail(a,b,c);
 				var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData([]);
-				$(elementLookup).data('ecLookup').resultSearchData(resultdata);
+				$(elementLookup).data('ecLookup').resultSearchData(resultdata, query);
 				// return resultdata;
 			},
 		});
@@ -139,11 +170,9 @@ $.ecDataSource = function(element,options){
 			this.ParamDataSource.dataTemp = this.ParamDataSource.data;
 		} else if (typeof(this.ParamDataSource.url) == 'string' && this.ParamDataSource.url != '' ){
 			chooseData = 'url';
-			this.getUrlData();
-			// var dataTemp = this.ParamDataSource.dataTemp, dataResult = this.getUrlData();
-			// this.ParamDataSource.dataTemp = dataTemp.concat(dataResult);
+			// this.getUrlData();
 		}
-		return this.ParamDataSource.dataTemp;
+		// return this.ParamDataSource.dataTemp;
 	};
 	this.searchResult = function(query){
 		if (chooseData == 'data' && this.ParamDataSource.dataTemp.length == 0){
@@ -159,7 +188,8 @@ $.ecDataSource = function(element,options){
 			return itemSearch.toLowerCase().indexOf(query.toLowerCase()) >= 0;
 		});
 		if (chooseData == 'url' && searchData.length == 0){
-			this.getGetStorage();
+			// this.getGetStorage();
+			this.getUrlData(query);
 		} else if (chooseData == 'data'){
 			this.resultSearchData(searchData, query);
 		}
@@ -170,9 +200,25 @@ $.ecDataSource = function(element,options){
 		$ulDropdown.html('');
 		if (data.length > 0 && query !== ''){
 			for (var key in data){
-				$liContentSearch = $('<li class="eclookup-itemsearch" idfield="'+ data[key][$(elementLookup).data('ecLookupSettings').idField] +'" valueDisplay="'+data[key][$(elementLookup).data('ecLookupSettings').displayFields]+'">'+ data[key][$(elementLookup).data('ecLookupSettings').idText] +'</li>');
+				var changeElemSearch = $(elementLookup).data('ecLookupSettings').displayTemplate();
+				$liContentSearch = $('<li class="eclookup-itemsearch" idfield="'+ data[key][$(elementLookup).data('ecLookupSettings').idField] +'" valueDisplay="'+data[key][$(elementLookup).data('ecLookupSettings').displayFields]+'"></li>');
+				if (changeElemSearch == ''){
+					$liContentSearch.html(data[key][$(elementLookup).data('ecLookupSettings').idText]);
+				} else{
+					var splitElement = changeElemSearch.split('#'), elementCreate = '';
+					for (var i in splitElement){
+						var res = splitElement[i].substring(0,1);
+						if (res == '*'){
+							elementCreate += data[key][splitElement[i].substring(1,splitElement[i].length)];
+						} else {
+							elementCreate += splitElement[i];
+						}
+					}
+					$liContentSearch.html(elementCreate);
+				}
 				$liContentSearch.bind('click').click(function(event){
 					var $searchtxt = $(elementLookup).parent().find('ul.eclookup-list>li.eclookup-txt');
+
 					$liLookup = $('<li class="eclookup-item"></li>');
 					$liLookup.insertBefore($searchtxt);
 
@@ -195,18 +241,22 @@ $.ecDataSource = function(element,options){
 							return e[$(elementLookup).data('ecLookupSettings').idField] != idGrep; 
 						});
 						$(elementLookup).data('ecLookup').ParamDataSource.dataSelect = dataResult;
+						$(elementLookup).data('ecLookup').createDetailData();
 					});
 					$btnRemoveLookup.appendTo($liLookup);
 
 					$searchtext.val('');
 					$searchtext.focus();
+
 					var dataResult = $.grep(data, function(e){ 
 						var idGrep = idField;
 						if (typeof(e[$(elementLookup).data('ecLookupSettings').idField]) == 'number')
 							idGrep = parseInt(idGrep);
 						return e[$(elementLookup).data('ecLookupSettings').idField] == idGrep; 
-					});
-					$(elementLookup).data('ecLookup').ParamDataSource.dataSelect.push(dataResult[0]);
+					}), dataSelectTemp = $(elementLookup).data('ecLookup').ParamDataSource.dataSelect;
+					dataSelectTemp = dataSelectTemp.concat(dataResult);
+					$(elementLookup).data('ecLookup').ParamDataSource.dataSelect = dataSelectTemp;
+					$(elementLookup).data('ecLookup').createDetailData();
 				});
 				$liContentSearch.appendTo($ulDropdown);
 			}
@@ -215,6 +265,49 @@ $.ecDataSource = function(element,options){
 			$liContentSearch.appendTo($ulDropdown);
 		}
 	};
+	this.createDetailData = function(){
+		var dataSelect = this.ParamDataSource.dataSelect;
+		if (dataSelect.length == 0){
+			$(elementLookup).parent().find('div.eclookup-detail').hide();
+		} else {
+			var $tableData = $(elementLookup).parent().find('table.eclookup-table'), dataKey = [];
+			$tableData.html('');
+			$tableHead = $('<thead></thead>');
+			$tableHead.appendTo($tableData);
+			$tableRow = $('<tr></tr>');
+			$tableRow.appendTo($tableHead);
+
+			$titleTable = $('<th>'+$(elementLookup).data('ecLookupSettings').idField+'</th>');
+			$titleTable.appendTo($tableRow);
+			dataKey.push($(elementLookup).data('ecLookupSettings').idField);
+			$titleTable = $('<th>'+$(elementLookup).data('ecLookupSettings').idText+'</th>');
+			$titleTable.appendTo($tableRow);
+			dataKey.push($(elementLookup).data('ecLookupSettings').idText);
+
+			$.each( dataSelect[0], function( key, value ) {
+				if (key != $(elementLookup).data('ecLookupSettings').idText && key != $(elementLookup).data('ecLookupSettings').idField){
+					$titleTable = $('<th>'+key+'</th>');
+					$titleTable.appendTo($tableRow);
+					dataKey.push(key);
+				}
+			});
+
+			$tableBody = $('<tbody></tbody>');
+			$tableBody.appendTo($tableData);
+
+			for (var i in dataSelect){
+				$tableRow = $('<tr></tr>');
+				$tableRow.appendTo($tableBody);
+				for (var n in dataKey){
+					$tableColumn = $('<td>'+dataSelect[i][dataKey[n]]+'</td>');
+					if(n == 1)
+						$tableColumn.css('border-right','1px solid #DBDADA');
+					$tableColumn.appendTo($tableRow);
+				}
+			}
+			$(elementLookup).parent().find('div.eclookup-detail').show();
+		}
+	}
 }
 // ecDataSource.prototype.data = function(){
 
