@@ -31,9 +31,20 @@ var KEY = {
 	COMMA        : 188
 };
 
+var operationCond = [
+	{Id:"eq",Title:"EQ ( == )"},
+	{Id:"ne",Title:"NE ( != )"},
+	{Id:"gt",Title:"GT ( > )"},
+	{Id:"gte",Title:"GTE ( >= )"},
+	{Id:"lt",Title:"LT ( < )"},
+	{Id:"lte",Title:"LTE ( <= )"},
+	{Id:"regex",Title:"Contains"},
+	{Id:"notcontains",Title:"Not Contains"}];
+
 var Settings_EcLookup = {
 	dataSource: {data:[]},
-	inputType: 'value',
+	inputType: 'multiple',
+	inputSearch: 'value',
 	idField: 'id',
 	idText: 'value',
 	displayFields: 'value',
@@ -117,6 +128,35 @@ var methodsLookup = {
 		$buttonRefresh = $('<button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>');
 		$buttonRefresh.appendTo($divSearch);
 
+		$advanceBtn = $('<div class="eclookup-btnadvance"><a>Advance (0 advance criteria entered)</a></div>');
+		$advanceBtn.appendTo($divSearch);
+
+		$divAdvanceSearch = $('<div class="eclookup-search-advance"></div>');
+		$divAdvanceSearch.appendTo($divDetailLookup);
+
+		$filterCond = $('<div class="eclookup-filtercond"></div>');
+		$filterCond.html('<span>Filter Condition : </span>');
+		$filterCond.appendTo($divAdvanceSearch);
+
+		$divFilterData = $('<div class="eclookup-filterlist"></div>');
+		$divFilterData.appendTo($divAdvanceSearch);
+
+		$ddFilterCond = $('<select class="form-control input-sm"></select>');
+		$ddFilterCond.appendTo($filterCond);
+		for (var key in operationCond){
+			$optionFilterCond = $('<option value="'+operationCond[key].Id+'">'+operationCond[key].Title+'</option>');
+			$optionFilterCond.appendTo($ddFilterCond)
+		}
+
+		$btnAddFilter = $('<button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span></div>');
+		$btnAddFilter.bind('click').click(function(event){
+			$('#'+idLookup).data('ecLookup').addFilterAdvance($('#'+idLookup));
+		});
+		$btnAddFilter.appendTo($filterCond);
+
+		$divClear = $('<div style="clear: both;"></div>');
+		$divClear.appendTo($filterCond);
+
 		$divDetailData = $('<div class="eclookup-detail-data"></div>');
 		$divDetailData.appendTo($divDetailLookup);
 
@@ -139,6 +179,7 @@ $.fn.ecLookup = function (method) {
 $.ecDataSource = function(element,options){
 	var elementLookup = element, chooseData = 'data';
 	this.ParamDataSource = options;
+	this.DataKey = [];
 	this.getUrlData = function(query){
 		var dataPost = {};
 		dataPost[this.ParamDataSource.callData] = query;
@@ -180,8 +221,8 @@ $.ecDataSource = function(element,options){
 		}
 		var searchData = jQuery.grep(this.ParamDataSource.dataTemp, function( item ) {
 			var itemSearch = '';
-			if ($(elementLookup).data('ecLookupSettings').inputType != ''){
-				itemSearch = item[$(elementLookup).data('ecLookupSettings').inputType];
+			if ($(elementLookup).data('ecLookupSettings').inputSearch != ''){
+				itemSearch = item[$(elementLookup).data('ecLookupSettings').inputSearch];
 			} else {
 				itemSearch = item;
 			}
@@ -291,6 +332,7 @@ $.ecDataSource = function(element,options){
 					dataKey.push(key);
 				}
 			});
+			this.DataKey = dataKey;
 
 			$tableBody = $('<tbody></tbody>');
 			$tableBody.appendTo($tableData);
@@ -305,8 +347,17 @@ $.ecDataSource = function(element,options){
 					$tableColumn.appendTo($tableRow);
 				}
 			}
+
+			// eclookup-search-advance
+
+
 			$(elementLookup).parent().find('div.eclookup-detail').show();
 		}
+	};
+	this.addFilterAdvance = function(element){
+		// console.log(this.DataKey);
+		// console.log(element);
+		$filterList = element.find('div.eclookup-filterlist');
 	}
 }
 // ecDataSource.prototype.data = function(){
