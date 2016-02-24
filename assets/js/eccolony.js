@@ -41,6 +41,13 @@ var operationCond = [
 	{Id:"regex",Title:"Contains"},
 	{Id:"notcontains",Title:"Not Contains"}];
 
+var filterlist = [
+	{Id:"and",Title:"AND"},
+	{Id:"or",Title:"OR"},
+	{Id:"nand",Title:"NAND"},
+	{Id:"nor",Title:"NOR"},
+]
+
 var Settings_EcLookup = {
 	dataSource: {data:[]},
 	inputType: 'multiple',
@@ -129,6 +136,10 @@ var methodsLookup = {
 		$buttonRefresh.appendTo($divSearch);
 
 		$advanceBtn = $('<div class="eclookup-btnadvance"><a>Advance (0 advance criteria entered)</a></div>');
+		$advanceBtn.bind('click').click(function(){
+			$('#'+idLookup).parent().find('div.eclookup-detail-search').hide();
+			$('#'+idLookup).parent().find('div.eclookup-search-advance').show();
+		});
 		$advanceBtn.appendTo($divSearch);
 
 		$divAdvanceSearch = $('<div class="eclookup-search-advance"></div>');
@@ -141,16 +152,22 @@ var methodsLookup = {
 		$divFilterData = $('<div class="eclookup-filterlist"></div>');
 		$divFilterData.appendTo($divAdvanceSearch);
 
+		$ulFilter = $('<ul class="eclookup-filter-advance"></ul>');
+		$ulFilter.appendTo($divFilterData);
+
+		$divClear = $('<div style="clear: both;"></div>');
+		$divClear.appendTo($divFilterData);
+
 		$ddFilterCond = $('<select class="form-control input-sm"></select>');
 		$ddFilterCond.appendTo($filterCond);
-		for (var key in operationCond){
-			$optionFilterCond = $('<option value="'+operationCond[key].Id+'">'+operationCond[key].Title+'</option>');
+		for (var key in filterlist){
+			$optionFilterCond = $('<option value="'+filterlist[key].Id+'">'+filterlist[key].Title+'</option>');
 			$optionFilterCond.appendTo($ddFilterCond)
 		}
 
 		$btnAddFilter = $('<button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span></div>');
 		$btnAddFilter.bind('click').click(function(event){
-			$('#'+idLookup).data('ecLookup').addFilterAdvance($('#'+idLookup));
+			$('#'+idLookup).data('ecLookup').addFilterAdvance(idLookup);
 		});
 		$btnAddFilter.appendTo($filterCond);
 
@@ -181,26 +198,29 @@ $.ecDataSource = function(element,options){
 	this.ParamDataSource = options;
 	this.DataKey = [];
 	this.getUrlData = function(query){
-		var dataPost = {};
-		dataPost[this.ParamDataSource.callData] = query;
+		var dataPost = {}, contentType = '';
+			dataPost[this.ParamDataSource.callData] = query;
+		if (this.ParamDataSource.call.toLowerCase() == 'post'){
+			contentType = 'application/json; charset=utf-8';
+		}
 		$.ajax({
 			url: this.ParamDataSource.url,
 			type: this.ParamDataSource.call,
 			dataType: 'json',
-			contentType: 'application/json; charset=utf-8',
+			contentType: contentType,
 			data: dataPost,
 			success: function (a) {
 				$(elementLookup).data('ecLookup').ParamDataSource.callOK(a);
 				var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData(a), dataTemp = $(elementLookup).data('ecLookup').ParamDataSource.dataTemp;
 				$(elementLookup).data('ecLookup').ParamDataSource.dataTemp = dataTemp.concat(resultdata);
 
-				$(elementLookup).data('ecLookup').resultSearchData(resultdata, '');
+				$(elementLookup).data('ecLookup').resultSearchData(resultdata, query);
 				// return resultdata;
 			},
 			error: function (a, b, c) {
 				$(elementLookup).data('ecLookup').ParamDataSource.callFail(a,b,c);
 				var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData([]);
-				$(elementLookup).data('ecLookup').resultSearchData(resultdata, query);
+				$(elementLookup).data('ecLookup').resultSearchData(resultdata, '');
 				// return resultdata;
 			},
 		});
@@ -355,10 +375,35 @@ $.ecDataSource = function(element,options){
 		}
 	};
 	this.addFilterAdvance = function(element){
-		// console.log(this.DataKey);
-		// console.log(element);
-		$filterList = element.find('div.eclookup-filterlist');
-	}
+		console.log(this.DataKey);
+		$filterList = $('#'+element).parent().find('div.eclookup-filterlist>ul');
+		console.log(filterlist);
+		$liFilter = $('<li></li>');
+		$liFilter.appendTo($filterList);
+
+		$ddFilter = $('<select class="form-control input-sm"></select>');
+		$ddFilter.appendTo($liFilter);
+		for (var key in this.DataKey){
+			$keyFilter = $('<option value="'+this.DataKey[key]+'">'+this.DataKey[key]+'</option>');
+			$keyFilter.appendTo($ddFilter);
+		}
+
+		$ddFilterCond = $('<select class="form-control input-sm"></select>');
+		$ddFilterCond.appendTo($liFilter);
+		for (var key in operationCond){
+			$keyFilter = $('<option value="'+operationCond[key].Id+'">'+operationCond[key].Title+'</option>');
+			$keyFilter.appendTo($ddFilterCond);
+		}
+
+		$inputFilter = $('<input type="text" class="form-control input-sm" />');
+		$inputFilter.appendTo($liFilter);
+
+		$buttonRemove = $('<button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>');
+		$buttonRemove.bind('click').click(function(event){
+			$(this).parent().remove();
+		});
+		$buttonRemove.appendTo($liFilter);
+	};
 }
 // ecDataSource.prototype.data = function(){
 
