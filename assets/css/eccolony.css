@@ -112,4 +112,23 @@ table.eclookup-table td {
   padding: 2px;
   text-align: center; }
 
+div.eclookup-btnadvance {
+  padding-top: 5px;
+  padding-left: 10px; }
+
+div.eclookup-search-advance {
+  padding-top: 5px; }
+
+div.eclookup-filtercond > span {
+  padding: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  float: left; }
+
+div.eclookup-filtercond > select {
+  width: 100px;
+  float: left;
+  margin-left: 5px;
+  margin-right: 5px; }
+
 /*# sourceMappingURL=eccolony.css.map */
