@@ -8,10 +8,16 @@
 			<button class="btn btn-primary btn-sm" id="getemployee1">Get Employee 1</button>
 		</div>
 	</div>
-	<div class="col-md-12">
+	<div class="col-md-12" style="margin-bottom:10px;">
 		<label class="col-md-1 filter-label">Employee 2</label>
 		<div class="col-md-4">
 			<input type="text" id="exampleLookup2" />
+		</div>
+	</div>
+	<div class="col-md-12">
+		<label class="col-md-1 filter-label">Employee 3</label>
+		<div class="col-md-4">
+			<input type="text" id="exampleLookup3" />
 		</div>
 	</div>
 </div>
@@ -41,6 +47,21 @@
 		idText: 'name', 
 		displayFields: 'name'
 	});
+
+	$('#exampleLookup3').ecLookup({
+		dataSource:{
+			url: 'https://gist.githubusercontent.com/arfian/82dffde13bbf5c39179b/raw/aeed539bbb092d7b0c094d6fa9ff00e8fec0b168/examplejson',
+			call: 'GET',
+			callData: 'search'
+		}, 
+		inputType: 'multiple',
+		inputSearch: '_id', 
+		idField: '_id', 
+		idText: '_id', 
+		displayFields: '_id'
+	});
+
+	// http://localhost:3000/server/getservers
 
 	$('#getemployee1').on('click',function(){
 		var a = $('#exampleLookup1').ecLookup('get');
