@@ -279,8 +279,14 @@ $.ecDataSource = function(element,options){
 				}
 				$liContentSearch.bind('click').click(function(event){
 					var $searchtxt = $(elementLookup).parent().find('ul.eclookup-list>li.eclookup-txt');
+					var settings = $.extend({}, Settings_EcLookup, options || {});
+					if ($(elementLookup).data('ecLookupSettings').inputType == 'ddl'){
+						$liLookup = $('<li class="eclookup-item max"></li>');
+						$(elementLookup).parent().find('li.eclookup-txt').css('display','none');
+					}else{
+						$liLookup = $('<li class="eclookup-item"></li>');
+					}
 
-					$liLookup = $('<li class="eclookup-item"></li>');
 					$liLookup.insertBefore($searchtxt);
 
 					$titleLookup = $('<p></p>');
@@ -292,6 +298,7 @@ $.ecDataSource = function(element,options){
 					$btnRemoveLookup = $('<span class="eclookup-remove"></span>');
 					$btnRemoveLookup.html('x');
 					$btnRemoveLookup.bind('click').click(function(){
+						$(elementLookup).parent().find('li.eclookup-txt').css('display','block');
 						$(this).parent().remove();
 						$searchtext.val('');
 						$searchtext.focus();
