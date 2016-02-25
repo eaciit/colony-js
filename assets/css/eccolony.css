@@ -138,6 +138,9 @@ div.eclookup-filtercond > select {
   margin-left: 5px;
   margin-right: 5px; }
 
+div.eclookup-filtercond > .refresh-btn {
+  margin-left: 5px; }
+
 ul.eclookup-filter-advance {
   list-style-type: none;
   padding: 0px; }
