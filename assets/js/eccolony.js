@@ -357,7 +357,7 @@ $.ecDataSource = function(element,options){
 			});
 			dataSelect = searchData;
 		} else if (choose == 'search-advance'){
-			this.getFilterAdvance();
+			dataSelect = this.getFilterAdvance();
 		}
 		if (dataTemp.length == 0){
 			$(elementLookup).parent().find('div.eclookup-detail').hide();
@@ -376,7 +376,7 @@ $.ecDataSource = function(element,options){
 			$titleTable.appendTo($tableRow);
 			dataKey.push($(elementLookup).data('ecLookupSettings').idText);
 
-			$.each( dataSelect[0], function( key, value ) {
+			$.each( dataTemp[0], function( key, value ) {
 				if (key != $(elementLookup).data('ecLookupSettings').idText && key != $(elementLookup).data('ecLookupSettings').idField){
 					$titleTable = $('<th>'+key+'</th>');
 					$titleTable.appendTo($tableRow);
@@ -408,9 +408,9 @@ $.ecDataSource = function(element,options){
 	this.getFilterAdvance = function(){
 		var dataSelect = this.ParamDataSource.dataSelect, dataTemp = [];
 		var filtercond = $(elementLookup).parent().find('div.eclookup-detail div.eclookup-filtercond>select[name=filtercond] option:selected').val();
-		var $ulAdvance = $(elementLookup).parent().find('div.eclookup-detail ul.eclookup-filter-advance>li');
+		var $ulAdvance = $(elementLookup).parent().find('div.eclookup-detail ul.eclookup-filter-advance>li'), countLi = $ulAdvance.length;
 
-		if (filtercond == 'or'){
+		if (filtercond == 'or' && countLi != 0){
 			$ulAdvance.each(function(index) {
 				var filtercondition = $(this).find('select[name=filtercondition]').val(), filterkey = $(this).find('select[name=filterkey]').val(), txtfilter = $(this).find('input[name=txtfilteradvance]').val();
 				for (var key in dataSelect){
@@ -453,7 +453,7 @@ $.ecDataSource = function(element,options){
 					}
 				}
 			});
-		} else {
+		} else if (filtercond == 'and' && countLi != 0) {
 			for (var key in dataSelect){
 				var boolTemp = false,indexTemp = 0;
 				$ulAdvance.each(function(index) {
@@ -530,8 +530,10 @@ $.ecDataSource = function(element,options){
 					}
 				});
 			}
+		} else {
+			dataTemp = dataSelect;
 		}
-		console.log(dataTemp);
+		return dataTemp;
 	};
 	this.addFilterAdvance = function(element){
 		$filterList = $('#'+element).parent().find('div.eclookup-filterlist>ul');
