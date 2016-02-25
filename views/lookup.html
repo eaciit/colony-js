@@ -26,9 +26,13 @@
 	$('#exampleLookup1').ecLookup({
 		dataSource:{data:[
 			{id:1,name:'arfian', alamat: 'jl.mawar'},
-			{id:2,name:'bagus', alamat: 'jl.masjid'}
+			{id:2,name:'bagus', alamat: 'jl.masjid'},
+			{id:3,name:'aaaaaaaa', alamat: 'jl.masjid'},
+			{id:4,name:'bbbbbbbbbbbbbbbbb', alamat: 'jl.masjid'},
+			{id:5,name:'ccccccccccccc', alamat: 'jl.masjid'},
+			{id:6,name:'ddddddddddddddddd', alamat: 'jl.masjid'}
 		]}, 
-		inputType: 'multiple',
+		inputType: 'ddl',
 		inputSearch: 'name',  
 		idField: 'id', 
 		idText: 'name', 
@@ -45,20 +49,23 @@
 		inputSearch: 'name', 
 		idField: 'id', 
 		idText: 'name', 
-		displayFields: 'name'
+		displayFields: 'name', 
 	});
 
 	$('#exampleLookup3').ecLookup({
 		dataSource:{
 			url: 'https://gist.githubusercontent.com/arfian/82dffde13bbf5c39179b/raw/aeed539bbb092d7b0c094d6fa9ff00e8fec0b168/examplejson',
 			call: 'GET',
-			callData: 'search'
+			callData: 'search', 
+			callOK: function(){
+				
+			}
 		}, 
-		inputType: 'multiple',
+		inputType: 'multiple', 
 		inputSearch: '_id', 
 		idField: '_id', 
 		idText: '_id', 
-		displayFields: '_id'
+		displayFields: '_id', 
 	});
 
 	// http://localhost:3000/server/getservers
