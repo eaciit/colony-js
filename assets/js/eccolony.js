@@ -68,10 +68,10 @@ var Setting_DataSource = {
 	callData: 'q',
 	timeout: 20,
 	callOK: function(res){
-		console.log('ggfgfgfgfg');
+
 	},
 	callFail: function(a,b,c){
-		console.log('totototototo');
+
 	},
 	resultData: function(res){
 		return res;
@@ -82,7 +82,6 @@ var Setting_DataSource = {
 var methodsLookup = {
 	init: function(options){
 		// var $o = this;
-		// console.log($o);
 		var settings = $.extend({}, Settings_EcLookup, options || {});
 		var settingDataSources = $.extend({}, Setting_DataSource, settings['dataSource'] || {});
 		methodsLookup.createSearchLookup(this, settings);
@@ -223,16 +222,6 @@ $.ecDataSource = function(element,options){
 				$(elementLookup).data('ecLookup').ParamDataSource.callOK(a);
 				// var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData(a), dataTemp = $(elementLookup).data('ecLookup').ParamDataSource.dataTemp;
 
-				// var searchData = jQuery.grep(this.ParamDataSource.dataTemp, function( item ) {
-				// 	var itemSearch = '';
-				// 	if ($(elementLookup).data('ecLookupSettings').inputSearch != ''){
-				// 		itemSearch = item[$(elementLookup).data('ecLookupSettings').inputSearch];
-				// 	} else {
-				// 		itemSearch = item;
-				// 	}
-				// 	return itemSearch.toLowerCase().indexOf(query.toLowerCase()) >= 0;
-				// });
-
 				// $(elementLookup).data('ecLookup').ParamDataSource.dataTemp = dataTemp.concat(resultdata);
 				var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData(a)
 				$(elementLookup).data('ecLookup').ParamDataSource.dataTemp = resultdata;
@@ -270,8 +259,6 @@ $.ecDataSource = function(element,options){
 			}
 			return itemSearch.toLowerCase().indexOf(query.toLowerCase()) >= 0;
 		});
-		console.log(chooseData);
-		console.log(searchData);
 		if (chooseData == 'url' && searchData.length == 0){
 			// this.getGetStorage();
 			this.getUrlData(query);
@@ -579,9 +566,6 @@ $.ecDataSource = function(element,options){
 		});
 		$buttonRemove.appendTo($liFilter);
 	};
-	this.example = function(){
-		console.log('asd');
-	}
 }
 // ecDataSource.prototype.data = function(){
 
