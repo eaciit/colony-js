@@ -1,15 +1,9 @@
 $(function() {
 	$('li.eclookup-txt>input').bind('focus', function () {
-		$(this).closest('ul.eclookup-list').addClass('eclookup-list-selected');
+		$(this).closest('div.eclookup-container').addClass('eclookup-list-selected');
 	});
 	$('li.eclookup-txt>input').bind('blur', function () {
-		$(this).closest('ul.eclookup-list').removeClass('eclookup-list-selected');
-	});
-	$('body').click(function(e) {
-		var target = $(e.target);
-		if(!target.is('div.eclookup-dropdown') && !target.is('ul.eclookup-list')) {
-			$('div.eclookup-dropdown').hide();
-		}
+		$(this).closest('div.eclookup-container').removeClass('eclookup-list-selected');
 	});
 });
 
@@ -54,7 +48,7 @@ var Settings_EcLookup = {
 	inputSearch: 'value',
 	idField: 'id',
 	idText: 'value',
-	displayFields: 'value',
+	// displayFields: 'value',
 	placeholder: 'Input Type Here !',
 	minChar: 0,
 	displayTemplate: function(){
@@ -93,8 +87,26 @@ var methodsLookup = {
 	createSearchLookup: function(element, options){
 		var $o = $(element), $container = $o.parent(), idLookup = $o.attr('id');
 		$o.css({'display':'none'});
+
+		$divSearch = $('<div class="eclookup-container"></div>');
+		$divSearch.appendTo($container);
+
 		$ulLookup = $('<ul class="eclookup-list"></ul>');
-		$ulLookup.appendTo($container);
+		$ulLookup.appendTo($divSearch);
+
+		$btnDropdown = $('<div class="eclookup-btndd"><span class="glyphicon glyphicon-chevron-up"></span></div>');
+		$btnDropdown.bind('click').click(function(){
+			$('span',this).toggleClass('glyphicon-chevron-down');
+			if ($('span',this).is('.glyphicon-chevron-down')){
+				$container.find('div.eclookup-detail').show();
+			} else {
+				$container.find('div.eclookup-detail').hide();
+			}
+		});
+		$btnDropdown.appendTo($divSearch);
+
+		$divClear = $('<div style="clear: both;"></div>');
+		$divClear.appendTo($divSearch);
 
 		$liLookupTxt = $('<li class="eclookup-txt"></li>');
 		$liLookupTxt.appendTo($ulLookup);
@@ -105,21 +117,15 @@ var methodsLookup = {
 			var search = $(this).val();
 			switch(event.keyCode) {
 				case KEY.BACKSPACE:
-					$o.data('ecLookup').searchResult(search);
+					$o.data('ecLookup').searchResult(search,'default');
 					break;
 				default:
 					if (search.length >= options.minChar){
-						$o.data('ecLookup').searchResult(search);
+						$o.data('ecLookup').searchResult(search,'default');
 					}
 			}
 		});
 		$textSearch.appendTo($liLookupTxt);
-
-		$divDropdown = $('<div class="eclookup-dropdown"></div>');
-		$divDropdown.appendTo($container);
-
-		$ulDropdown = $('<ul class="eclookup-listsearch"></ul>');
-		$ulDropdown.appendTo($divDropdown);
 
 		$divDetailLookup = $('<div class="eclookup-detail"></div>');
 		$divDetailLookup.appendTo($container);
@@ -131,10 +137,11 @@ var methodsLookup = {
 		$inputSearch = $('<input type="text" class="txt-search-detail"/>');
 		$inputSearch.appendTo($divSearch);
 
-		$buttonRefresh = $('<button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>');
+		$buttonRefresh = $('<button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-search"></span></button>');
 		$buttonRefresh.bind('click').click(function(){
 			var search = $('#'+idLookup).parent().find('.txt-search-detail').val();
-			$('#'+idLookup).data('ecLookup').createDetailData('search', search);
+			// $('#'+idLookup).data('ecLookup').createDetailData('search', search);
+			$o.data('ecLookup').searchResult(search,'default');
 		});
 		$buttonRefresh.appendTo($divSearch);
 
@@ -168,17 +175,25 @@ var methodsLookup = {
 			$optionFilterCond.appendTo($ddFilterCond);
 		}
 
-		$btnAddFilter = $('<button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span></div>');
+		$btnAddFilter = $('<button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span></div>');
 		$btnAddFilter.bind('click').click(function(event){
 			$('#'+idLookup).data('ecLookup').addFilterAdvance(idLookup);
 		});
 		$btnAddFilter.appendTo($filterCond);
 
-		$btnRefreshAdvance = $('<button class="btn btn-sm btn-primary refresh-btn"><span class="glyphicon glyphicon-refresh"></span> Refresh</div>');
+		$btnRefreshAdvance = $('<button class="btn btn-sm btn-primary refresh-btn"><span class="glyphicon glyphicon-search"></span> </div>');
 		$btnRefreshAdvance.bind('click').click(function(){
-			$('#'+idLookup).data('ecLookup').createDetailData('search-advance', '');
+			// $('#'+idLookup).data('ecLookup').createDetailData('search-advance', '');
+			$o.data('ecLookup').searchResult('advance','advance');
 		});
 		$btnRefreshAdvance.appendTo($filterCond);
+
+		$btnBackFilter = $('<div class="eclookup-btnadvance"><a>Back (Filter Default)</a></div>');
+		$btnBackFilter.bind('click').click(function(){
+			$('#'+idLookup).parent().find('div.eclookup-detail-search').show();
+			$('#'+idLookup).parent().find('div.eclookup-search-advance').hide();
+		});
+		$btnBackFilter.appendTo($filterCond);
 
 		$divClear = $('<div style="clear: both;"></div>');
 		$divClear.appendTo($filterCond);
@@ -226,16 +241,56 @@ $.ecDataSource = function(element,options){
 				var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData(a)
 				$(elementLookup).data('ecLookup').ParamDataSource.dataTemp = resultdata;
 				$(elementLookup).data('ecLookup').resultSearchData(resultdata, query);
-				// return resultdata;
 			},
 			error: function (a, b, c) {
 				$(elementLookup).data('ecLookup').ParamDataSource.callFail(a,b,c);
 				var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData([]);
 				$(elementLookup).data('ecLookup').resultSearchData(resultdata, '');
-				// return resultdata;
 			},
 		});
 	};
+	this.getUrlDataAdvance = function(){
+		var $ulAdvance = $(elementLookup).parent().find('div.eclookup-detail ul.eclookup-filter-advance>li'), countLi = $ulAdvance.length;
+		if (countLi > 0){
+			var filtercond = $(elementLookup).parent().find('div.eclookup-detail div.eclookup-filtercond>select[name=filtercond] option:selected').val();
+			var dataPost = {}, contentType = '';
+			dataPost[this.ParamDataSource.callData] = '';
+			dataPost['cond'] =  filtercond;
+			dataPost['filterlist'] = [];
+			if (this.ParamDataSource.call.toLowerCase() == 'post'){
+				contentType = 'application/json; charset=utf-8';
+			}
+			$ulAdvance.each(function(index) {
+				var filtercondition = $(this).find('select[name=filtercondition]').val(), filterkey = $(this).find('select[name=filterkey]').val(), txtfilter = $(this).find('input[name=txtfilteradvance]').val();
+				dataPost['filterlist'].push({
+					field: filterkey,
+					condition: filtercondition,
+					value: txtfilter
+				});
+			});
+			$.ajax({
+				url: this.ParamDataSource.url,
+				type: this.ParamDataSource.call,
+				dataType: 'json',
+				contentType: contentType,
+				data: dataPost,
+				success: function (a) {
+					$(elementLookup).data('ecLookup').ParamDataSource.callOK(a);
+					// var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData(a), dataTemp = $(elementLookup).data('ecLookup').ParamDataSource.dataTemp;
+
+					// $(elementLookup).data('ecLookup').ParamDataSource.dataTemp = dataTemp.concat(resultdata);
+					var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData(a)
+					$(elementLookup).data('ecLookup').ParamDataSource.dataTemp = resultdata;
+					$(elementLookup).data('ecLookup').resultSearchData(resultdata, 'advance');
+				},
+				error: function (a, b, c) {
+					$(elementLookup).data('ecLookup').ParamDataSource.callFail(a,b,c);
+					var resultdata = $(elementLookup).data('ecLookup').ParamDataSource.resultData([]);
+					$(elementLookup).data('ecLookup').resultSearchData(resultdata, '');
+				},
+			});
+		}
+	}
 	this.getGetStorage = function(){
 		if (this.ParamDataSource.data.length > 0){
 			chooseData = 'data';
@@ -246,22 +301,28 @@ $.ecDataSource = function(element,options){
 		}
 		// return this.ParamDataSource.dataTemp;
 	};
-	this.searchResult = function(query){
+	this.searchResult = function(query, typesearch){
 		if (chooseData == 'data' && this.ParamDataSource.dataTemp.length == 0){
 			this.getGetStorage();
 		}
-		var searchData = jQuery.grep(this.ParamDataSource.dataTemp, function( item ) {
-			var itemSearch = '';
-			if ($(elementLookup).data('ecLookupSettings').inputSearch != ''){
-				itemSearch = item[$(elementLookup).data('ecLookupSettings').inputSearch];
-			} else {
-				itemSearch = item;
-			}
-			return itemSearch.toLowerCase().indexOf(query.toLowerCase()) >= 0;
-		});
-		if (chooseData == 'url' && searchData.length == 0){
-			// this.getGetStorage();
+		var searchData = [];
+		if (typesearch == 'default'){
+			searchData = jQuery.grep(this.ParamDataSource.dataTemp, function( item ) {
+				var itemSearch = '';
+				if ($(elementLookup).data('ecLookupSettings').inputSearch != ''){
+					itemSearch = item[$(elementLookup).data('ecLookupSettings').inputSearch];
+				} else {
+					itemSearch = item;
+				}
+				return itemSearch.toLowerCase().indexOf(query.toLowerCase()) >= 0;
+			});
+		} else {
+			searchData = this.getFilterAdvance();
+		}
+		if (chooseData == 'url' && searchData.length == 0 && typesearch == 'default'){
 			this.getUrlData(query);
+		} else if (chooseData == 'url' && searchData.length == 0 && typesearch == 'advance'){
+			this.getUrlDataAdvance();
 		} else if (chooseData == 'data'){
 			this.resultSearchData(searchData, query);
 		} else if (chooseData == 'url' && searchData.length > 0){
@@ -269,117 +330,22 @@ $.ecDataSource = function(element,options){
 		}
 	};
 	this.resultSearchData = function(data,query){
-		var $ulDropdown = $(elementLookup).parent().find('ul.eclookup-listsearch');
-		$(elementLookup).parent().find('div.eclookup-dropdown').show();
-		$ulDropdown.html('');
+		var $tableData = $(elementLookup).parent().find('table.eclookup-table');
+		$(elementLookup).parent().find('div.eclookup-detail').show();
+		$tableData.html('');
 		if (data.length > 0 && query !== ''){
-			for (var key in data){
-				var changeElemSearch = $(elementLookup).data('ecLookupSettings').displayTemplate();
-				$liContentSearch = $('<li class="eclookup-itemsearch" idfield="'+ data[key][$(elementLookup).data('ecLookupSettings').idField] +'" valueDisplay="'+data[key][$(elementLookup).data('ecLookupSettings').displayFields]+'"></li>');
-				if (changeElemSearch == ''){
-					$liContentSearch.html(data[key][$(elementLookup).data('ecLookupSettings').idText]);
-				} else{
-					var splitElement = changeElemSearch.split('#'), elementCreate = '';
-					for (var i in splitElement){
-						var res = splitElement[i].substring(0,1);
-						if (res == '*'){
-							elementCreate += data[key][splitElement[i].substring(1,splitElement[i].length)];
-						} else {
-							elementCreate += splitElement[i];
-						}
-					}
-					$liContentSearch.html(elementCreate);
-				}
-				$liContentSearch.bind('click').click(function(event){
-					var $searchtxt = $(elementLookup).parent().find('ul.eclookup-list>li.eclookup-txt');
-					var settings = $.extend({}, Settings_EcLookup, options || {});
-					if ($(elementLookup).data('ecLookupSettings').inputType == 'ddl'){
-						$liLookup = $('<li class="eclookup-item max"></li>');
-						$(elementLookup).parent().find('li.eclookup-txt').css('display','none');
-					}else{
-						$liLookup = $('<li class="eclookup-item"></li>');
-					}
-
-					$liLookup.insertBefore($searchtxt);
-
-					$titleLookup = $('<p></p>');
-					$titleLookup.html($(this).attr('valueDisplay'));
-					$titleLookup.appendTo($liLookup);
-
-					var $searchtext = $(elementLookup).parent().find('li.eclookup-txt>input'), idField = $(this).attr('idfield');
-
-					$btnRemoveLookup = $('<span class="eclookup-remove"></span>');
-					$btnRemoveLookup.html('x');
-					$btnRemoveLookup.bind('click').click(function(){
-						$(elementLookup).parent().find('li.eclookup-txt').css('display','block');
-						$(this).parent().remove();
-						$searchtext.val('');
-						$searchtext.focus();
-						var dataResult = $.grep($(elementLookup).data('ecLookup').ParamDataSource.dataSelect, function(e){ 
-							var idGrep = idField;
-							if (typeof(e[$(elementLookup).data('ecLookupSettings').idField]) == 'number')
-								idGrep = parseInt(idGrep);
-							return e[$(elementLookup).data('ecLookupSettings').idField] != idGrep; 
-						});
-						$(elementLookup).data('ecLookup').ParamDataSource.dataSelect = dataResult;
-						$(elementLookup).data('ecLookup').createDetailData('new','');
-					});
-					$btnRemoveLookup.appendTo($liLookup);
-
-					$searchtext.val('');
-					$searchtext.focus();
-
-					var dataResult = $.grep(data, function(e){ 
-						var idGrep = idField;
-						if (typeof(e[$(elementLookup).data('ecLookupSettings').idField]) == 'number')
-							idGrep = parseInt(idGrep);
-						return e[$(elementLookup).data('ecLookupSettings').idField] == idGrep; 
-					}), dataSelectTemp = $(elementLookup).data('ecLookup').ParamDataSource.dataSelect;
-					dataSelectTemp = dataSelectTemp.concat(dataResult);
-					$(elementLookup).data('ecLookup').ParamDataSource.dataSelect = dataSelectTemp;
-					$(elementLookup).data('ecLookup').createDetailData('new','');
-				});
-				$liContentSearch.appendTo($ulDropdown);
-			}
-		} else if (query !== ''){
-			$liContentSearch = $('<li class="eclookup-itemsearch">Search Not Found !</li>');
-			$liContentSearch.appendTo($ulDropdown);
-		}
-	};
-	this.createDetailData = function(choose, searchquery){
-		var dataSelect = this.ParamDataSource.dataSelect, dataTemp = this.ParamDataSource.dataSelect;
-		if (choose !== 'new' && searchquery.length > 0){
-			var searchData = jQuery.grep(dataSelect, function( item ) {
-				var itemSearch = '';
-				if (searchquery != ''){
-					itemSearch = item[$(elementLookup).data('ecLookupSettings').inputSearch];
-				} else {
-					itemSearch = item;
-				}
-				return itemSearch.toLowerCase().indexOf(searchquery.toLowerCase()) >= 0;
-			});
-			dataSelect = searchData;
-		} else if (choose == 'search-advance'){
-			dataSelect = this.getFilterAdvance();
-		}
-		if (dataTemp.length == 0){
-			$(elementLookup).parent().find('div.eclookup-detail').hide();
-		} else {
-			var $tableData = $(elementLookup).parent().find('table.eclookup-table'), dataKey = [];
-			$tableData.html('');
+			var dataKey = [], changeElemSearch = $(elementLookup).data('ecLookupSettings').displayTemplate();
 			$tableHead = $('<thead></thead>');
 			$tableHead.appendTo($tableData);
 			$tableRow = $('<tr></tr>');
 			$tableRow.appendTo($tableHead);
-
 			$titleTable = $('<th>'+$(elementLookup).data('ecLookupSettings').idField+'</th>');
 			$titleTable.appendTo($tableRow);
 			dataKey.push($(elementLookup).data('ecLookupSettings').idField);
 			$titleTable = $('<th>'+$(elementLookup).data('ecLookupSettings').idText+'</th>');
 			$titleTable.appendTo($tableRow);
 			dataKey.push($(elementLookup).data('ecLookupSettings').idText);
-
-			$.each( dataTemp[0], function( key, value ) {
+			$.each( data[0], function( key, value ) {
 				if (key != $(elementLookup).data('ecLookupSettings').idText && key != $(elementLookup).data('ecLookupSettings').idField){
 					$titleTable = $('<th>'+key+'</th>');
 					$titleTable.appendTo($tableRow);
@@ -387,29 +353,86 @@ $.ecDataSource = function(element,options){
 				}
 			});
 			this.DataKey = dataKey;
-
 			$tableBody = $('<tbody></tbody>');
 			$tableBody.appendTo($tableData);
 
-			for (var i in dataSelect){
-				$tableRow = $('<tr></tr>');
+			for (var key in data){
+				$tableRow = $('<tr idfield="'+ data[key][$(elementLookup).data('ecLookupSettings').idField] +'" valueDisplay="'+data[key][$(elementLookup).data('ecLookupSettings').idText]+'"></tr>');
+				$tableRow.bind('click').click(function(){
+					$liLookup = $('<li class="eclookup-item"></li>'), limitDataSelect = 0;
+					if ($(elementLookup).data('ecLookupSettings').inputType == 'ddl'){
+						$liLookup = $('<li class="eclookup-item max"></li>');
+						$(elementLookup).parent().find('li.eclookup-txt').css('display','none');
+						limitDataSelect = 1;
+					}
+					if (limitDataSelect == 0 || $(elementLookup).data('ecLookup').ParamDataSource.dataSelect.length < limitDataSelect){
+						var $searchtxt = $(elementLookup).parent().find('ul.eclookup-list>li.eclookup-txt'), idField = $(this).attr('idfield'), $searchtxtinput = $searchtxt.find('input');
+
+						var dataResult = $.grep(data, function(e){ 
+							var idGrep = idField;
+							if (typeof(e[$(elementLookup).data('ecLookupSettings').idField]) == 'number')
+								idGrep = parseInt(idGrep);
+							return e[$(elementLookup).data('ecLookupSettings').idField] == idGrep; 
+						}), dataSelectTemp = $(elementLookup).data('ecLookup').ParamDataSource.dataSelect;
+
+						if (changeElemSearch != ''){
+							var idField = $(this).attr('idfield');
+
+							var splitElement = changeElemSearch.split('#'), elementCreate = '';
+							for (var i in splitElement){
+								var res = splitElement[i].substring(0,1);
+								if (res == '*'){
+									elementCreate += dataResult[0][splitElement[i].substring(1,splitElement[i].length)];
+								} else {
+									elementCreate += splitElement[i];
+								}
+							}
+							$titleLookup = $('<p></p>');
+							$titleLookup.html(elementCreate);
+							$titleLookup.appendTo($liLookup);
+						} else {
+							$titleLookup = $('<p></p>');
+							$titleLookup.html($(this).attr('valueDisplay'));
+							$titleLookup.appendTo($liLookup);
+						}
+						$btnRemoveLookup = $('<span class="eclookup-remove"></span>');
+						$btnRemoveLookup.html('x');
+						$btnRemoveLookup.bind('click').click(function(){
+							$(elementLookup).parent().find('li.eclookup-txt').css('display','block');
+							$(this).parent().remove();
+							$searchtxtinput.val('');
+							$searchtxtinput.focus();
+							var dataResult = $.grep($(elementLookup).data('ecLookup').ParamDataSource.dataSelect, function(e){ 
+								var idGrep = idField;
+								if (typeof(e[$(elementLookup).data('ecLookupSettings').idField]) == 'number')
+									idGrep = parseInt(idGrep);
+								return e[$(elementLookup).data('ecLookupSettings').idField] != idGrep; 
+							});
+							$(elementLookup).data('ecLookup').ParamDataSource.dataSelect = dataResult;
+						});
+						$btnRemoveLookup.appendTo($liLookup);
+
+						$liLookup.insertBefore($searchtxt);
+						$searchtxtinput.val('');
+						$searchtxtinput.focus();
+
+						dataSelectTemp = dataSelectTemp.concat(dataResult);
+						$(elementLookup).data('ecLookup').ParamDataSource.dataSelect = dataSelectTemp;
+					}
+				});
 				$tableRow.appendTo($tableBody);
 				for (var n in dataKey){
-					$tableColumn = $('<td>'+dataSelect[i][dataKey[n]]+'</td>');
+					$tableColumn = $('<td>'+data[key][dataKey[n]]+'</td>');
 					if(n == 1)
 						$tableColumn.css('border-right','1px solid #DBDADA');
 					$tableColumn.appendTo($tableRow);
 				}
 			}
-
-			// eclookup-search-advance
-
-
-			$(elementLookup).parent().find('div.eclookup-detail').show();
-		}
+		} 
 	};
 	this.getFilterAdvance = function(){
-		var dataSelect = this.ParamDataSource.dataSelect, dataTemp = [];
+		// var dataSelect = this.ParamDataSource.dataSelect, dataTemp = [];
+		var dataSelect = this.ParamDataSource.dataTemp, dataTemp = [];
 		var filtercond = $(elementLookup).parent().find('div.eclookup-detail div.eclookup-filtercond>select[name=filtercond] option:selected').val();
 		var $ulAdvance = $(elementLookup).parent().find('div.eclookup-detail ul.eclookup-filter-advance>li'), countLi = $ulAdvance.length;
 
