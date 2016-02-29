@@ -1,18 +1,30 @@
+div.eclookup-container {
+  padding: 0px;
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  text-align: right; }
+
 ul.eclookup-list {
   overflow: hidden;
   height: auto !important;
   height: 1%;
-  width: 100%;
-  border: 1px solid #e6e6e6;
+  width: 90%;
   cursor: text;
   font-size: 12px;
   font-family: Verdana;
+  padding: 0px 5px 5px 0px;
   z-index: 999;
   margin: 0;
-  padding: 0px 5px 5px 0px;
-  background-color: #fff;
   list-style-type: none;
+  float: left;
   clear: left; }
+
+div.eclookup-btndd {
+  width: 10%;
+  float: left;
+  cursor: pointer;
+  padding-top: 8px;
+  padding-right: 8px; }
 
 li.eclookup-item {
   float: left;
@@ -55,7 +67,7 @@ li.eclookup-txt > input {
   border: none;
   width: 100%; }
 
-ul.eclookup-list-selected {
+div.eclookup-list-selected {
   -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 2px 3px rgba(0, 0, 0, 0.05);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 2px 3px rgba(0, 0, 0, 0.05); }
 
@@ -118,6 +130,11 @@ table.eclookup-table td {
   padding: 2px;
   text-align: center; }
 
+table.eclookup-table tbody > tr {
+  cursor: pointer; }
+  table.eclookup-table tbody > tr:hover {
+    background-color: #CFCFCF; }
+
 div.eclookup-btnadvance {
   padding-top: 5px;
   padding-left: 10px; }
@@ -139,7 +156,8 @@ div.eclookup-filtercond > select {
   margin-right: 5px; }
 
 div.eclookup-filtercond > .refresh-btn {
-  margin-left: 5px; }
+  margin-left: 5px;
+  margin-right: 5px; }
 
 ul.eclookup-filter-advance {
   list-style-type: none;
@@ -163,4 +181,4 @@ ul.eclookup-filter-advance li > button {
   float: left;
   margin-left: 5px; }
 
-/*# sourceMappingURL=eccolony.css.map */
+/*# sourceMappingURL=eclookup.css.map */
