@@ -1,0 +1,105 @@
+<div class="col-md-12">
+	<div class="col-md-12" style="margin-bottom:10px;">
+		<div id="grid1"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#grid1').ecDataBrowserGrid({
+		columns: {data:[
+			{field:"Field", title:"Field", dataEdit: false},
+			{field:"Label", title:"Label" },
+			{field:"Format", title:"Format"},
+			{field:"Align", title:"Align"},
+			{field:"ShowIndex", title:"ShowIndex" },
+			{field:"Sortable", title:"Sortable"},
+			{field:"SimpleFilter", title:"SimpleFilter"},
+			{field:"AdvanceFilter", title:"AdvanceFilter"},
+			{field:"Aggregate", title:"Cash Transation Type"}
+
+		]},
+		dataSource: {
+			pageSize: 15,
+			data:[
+			{
+		            "Field" : "_id",
+		            "Label" : "ID",
+		            "Format" : "",
+		            "Align" : "Left",
+		            "ShowIndex" : 1,
+		            "Sortable" : true,
+		            "SimpleFilter" : true,
+		            "AdvanceFilter" : true,
+		            "Aggregate" : ""
+		        }, 
+		        {
+		            "Field" : "Country",
+		            "Label" : "Country",
+		            "Format" : "",
+		            "Align" : "Left",
+		            "ShowIndex" : 2,
+		            "Sortable" : true,
+		            "SimpleFilter" : true,
+		            "AdvanceFilter" : true,
+		            "Aggregate" : ""
+		        }, 
+		        {
+		            "Field" : "CompanyName",
+		            "Label" : "Company Name",
+		            "Format" : "",
+		            "Align" : "Left",
+		            "ShowIndex" : 3,
+		            "Sortable" : true,
+		            "SimpleFilter" : true,
+		            "AdvanceFilter" : true,
+		            "Aggregate" : ""
+		        }, 
+		        {
+		            "Field" : "GroupCountry",
+		            "Label" : "Group Country",
+		            "Format" : "",
+		            "Align" : "Left",
+		            "ShowIndex" : 4,
+		            "Sortable" : true,
+		            "SimpleFilter" : true,
+		            "AdvanceFilter" : true,
+		            "Aggregate" : ""
+		        }, 
+		        {
+		            "Field" : "CompanyType",
+		            "Label" : "Company Type",
+		            "Format" : "",
+		            "Align" : "Left",
+		            "ShowIndex" : 5,
+		            "Sortable" : true,
+		            "SimpleFilter" : true,
+		            "AdvanceFilter" : true,
+		            "Aggregate" : ""
+		        }, 
+		        {
+		            "Field" : "Company",
+		            "Label" : "Company",
+		            "Format" : "",
+		            "Align" : "Left",
+		            "ShowIndex" : 6,
+		            "Sortable" : true,
+		            "SimpleFilter" : true,
+		            "AdvanceFilter" : true,
+		            "Aggregate" : ""
+		        }, 
+		        {
+		            "Field" : "Ratio",
+		            "Label" : "Ratio",
+		            "Format" : "N0",
+		            "Align" : "Right",
+		            "ShowIndex" : 7,
+		            "Sortable" : true,
+		            "SimpleFilter" : false,
+		            "AdvanceFilter" : true,
+		            "Aggregate" : "Sum"
+		        }
+		    
+		]},
+		dataEdit: {data: true}
+	});
+</script>
