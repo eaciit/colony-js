@@ -55,7 +55,7 @@ var Settings_EcLookup = {
 		return "";
 	},
 };
-var Setting_DataSource = {
+var Setting_DataSource_Lookup = {
 	data: [],
 	url: '',
 	call: 'get',
@@ -77,11 +77,11 @@ var methodsLookup = {
 	init: function(options){
 		// var $o = this;
 		var settings = $.extend({}, Settings_EcLookup, options || {});
-		var settingDataSources = $.extend({}, Setting_DataSource, settings['dataSource'] || {});
+		var settingDataSources = $.extend({}, Setting_DataSource_Lookup, settings['dataSource'] || {});
 		methodsLookup.createSearchLookup(this, settings);
 		return this.each(function () {
 			$(this).data("ecLookupSettings", settings);
-			$(this).data("ecLookup", new $.ecDataSource(this, settingDataSources));
+			$(this).data("ecLookup", new $.ecDataSourceLookup(this, settingDataSources));
 		});
 	},
 	createSearchLookup: function(element, options){
@@ -217,7 +217,7 @@ $.fn.ecLookup = function (method) {
 		methodsLookup['init'].apply(this,arguments);
 	}
 }
-$.ecDataSource = function(element,options){
+$.ecDataSourceLookup = function(element,options){
 	var elementLookup = element, chooseData = 'data';
 	this.ParamDataSource = options;
 	this.DataKey = [];
@@ -297,9 +297,7 @@ $.ecDataSource = function(element,options){
 			this.ParamDataSource.dataTemp = this.ParamDataSource.data;
 		} else if (typeof(this.ParamDataSource.url) == 'string' && this.ParamDataSource.url != '' ){
 			chooseData = 'url';
-			// this.getUrlData();
 		}
-		// return this.ParamDataSource.dataTemp;
 	};
 	this.searchResult = function(query, typesearch){
 		if (chooseData == 'data' && this.ParamDataSource.dataTemp.length == 0){
