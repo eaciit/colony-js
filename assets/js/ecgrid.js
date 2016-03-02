@@ -57,10 +57,12 @@ var methodsGrid = {
 		return this.each(function () {
 			$(this).data("ecGrid", new $.ecGridSetting(this,settings));
 			$(this).data("ecGridDataSource", new $.ecDataSource(this,settings['dataSource'], "ecGridDataSource"));
+			methodsGrid.createElementGrid(this, settings);
 		});
 	},
 	createElementGrid: function(element, options){
-
+		var $o = $(element);
+		$o.data('ecGridDataSource').Reload();
 	},
 	reloadData: function(options){
 

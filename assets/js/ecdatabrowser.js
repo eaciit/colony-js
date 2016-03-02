@@ -1,248 +1,179 @@
-var Settings_EcDataBrowserFilter = {
-	dataSource: {data:[]},
-	maxColumn:3
-}
-
-var methodsDB = {
-	init: function(options){
-		var settings = $.extend({}, Settings_EcDataBrowserFilter, options || {});
-			methodsDB.GenerateFilter(this, settings);		
-		return this.each(function () {
-			$(this).data("ecDataBrowserFilter", settings);
-		});
-	},
-	GenerateFilter :function(elem,options){
-		var $ox = $(elem), $container = $ox.parent(), idLookup = $ox.attr('id');
-		var datax = options.dataSource.data;
-		var data = [];
-		var lastindex = 0;
-
-		for(var i in datax){
-			if(datax[i].ShowIndex<=lastindex){
-				data.unshift(datax[i]);
-			}else{
-				data.push(datax[i]);
-			}
-			lastindex = datax[i].ShowIndex;
-		}
-
-		var width = "col-md-"+(12/options.maxColumn)
-		for(var i in data){
-			var str = "<div class='"+width+" DB-margin' id='DBFilter"+i+"'>";
-			str += "</div>";
-			$str = $(str); 
-			$str.appendTo($ox);
-
-			$o = $("#DBFilter"+i);
-			var strlabel = "<div class='col-md-3 align-right'><label class='filter-label' id='DBLabel"+i+"' >";
-				strlabel += data[i].Label;
-			strlabel+="</label></div>";
-			$strlabel = $(strlabel);
-			$strlabel.appendTo($o)
-
-			var strField = "<div  class='col-md-7'> <input id='DBField"+i+"'>";
-			strField += "</input></div>";
-			$strField = $(strField);
-			$strField.appendTo($o);
-
-			$("#DBField"+i).attr("placeholder","Fill "+ data[i].Label);
-
-			var dtype = data[i].Format.indexOf("N0") > -1 ? "int" : data[i].Format.indexOf("N") > -1 ? "float" : data[i].Format.toLowerCase().indexOf("m") > -1 || data[i].Format.toLowerCase().indexOf("d") > -1 || data[i].Format.toLowerCase().indexOf("y") > -1 ? "date":data[i].Format.toLowerCase().indexOf("bool") > -1? "bool":"string";
-			if(dtype.toLowerCase() == "bool"){
-				$("#DBField"+i).attr("type","checkbox");
-			}else if(dtype.toLowerCase() =="float" || dtype.toLowerCase() =="double"){
-				$("#DBField"+i).attr("class","form-control");
-				$("#DBField"+i).attr("type","number");
-			}else if(dtype.toLowerCase() =="int"){
-				$("#DBField"+i).attr("class","form-control");
-				$("#DBField"+i).attr("type","number");
-			}else if(dtype.toLowerCase() =="date") {
-				var depthx = data[i].Format.indexOf("dd") > -1 ? "month" : data[i].Format.toLowerCase().indexOf("m") > -1 ? "year":"decade";
-				// if(data[i].DateRange){
-				// 	$FieldParent = $("#DBField"+i).parent();
-				// 	$FieldDate = $("<input id='DBField"+i+"a'> </input> - ")
-				// 	$FieldDate.appendTo($FieldParent);
-				// 	$("#DBField"+i).kendoDatePicker({
-				// 		format: data[i].Format,
-				// 		depth: depthx
-				// 	});
-				// 	$("#DBField"+i+"a").kendoDatePicker({
-				// 		format: data[i].Format,
-				// 		depth: depthx
-				// 	});
-				// }else{
-					$("#DBField"+i).kendoDatePicker({
-						format: data[i].Format,
-						depth: depthx,
-						start:depthx
-					});
-				// }
-			}else {
-				$("#DBField"+i).attr("class","form-control");
-			}
-
-			if(!data[i].SimpleFilter && data[i].AdvanceFilter){
-				$("#DBFilter"+i).hide();
-				$("#DBFilter"+i).attr("class",$("#DBFilter"+i).attr("class")+" advance-filter")
-			}
-		}
-
-		var strBtn = "<div class='col-md-12 DB-margin' >";
-		strBtn+= "<button class='btn btn-primary pull left' onclick='methodsDB.GetFilter(\""+idLookup+"\");'><span class='glyphicon glyphicon-repeat'></span> Refresh</button>";
-		strBtn+= "<button class='btn btn-primary pull left DB-margin-left' onclick='methodsDB.ShowAdvance();'><span class='glyphicon glyphicon-plus'></span> Advance Filter</button>";
-		strBtn+= "</div>";
-		$strBtn = $(strBtn);
-		$strBtn.appendTo($ox)
-	},
-	ShowAdvance:function(){
-		$(".advance-filter").each(function(){
-		if($(this).attr("style")!= undefined && $(this).attr("style").indexOf("none")>-1)
-			$(this).show();
-		else
-			$(this).hide();
-		});
-	},
-	GetFilter:function(id){
-		var res = {};
-		var opt = $("#"+id).data("ecDataBrowserFilter").dataSource.data;
-		for(var i in opt){
-			var value = $("#DBField"+i).val();
-			var field = opt[i].Field;
-			if($("#DBField"+i).attr("type") == "checkbox"){
-				res[field] = $("#DBField"+i)[0].checked;
-			}else{
-				res[field] = value;
-			}
-		}
-		return res;
-	},
-	CallAjax:function(elem,options){
-		var ds = options.dataSource;
-		var url = ds.url;
-		var data = ds.callData;
-		var call = ds.call;
-		 $.ajax({
-                url: url,
-                type: call,
-                dataType: 'json',
-                data : data,
-                success : function(res) {
-                        
-                }
-        });
-		
-	}
-
-}
-
-$.fn.ecDataBrowserFilter = function (method) {
-	if (methodsDB[method]) {
-		return methodsDB[method].apply(this, Array.prototype.slice.call(arguments, 1));
+$.fn.ecDataBrowser = function (method) {
+	if (methodsDataBrowser[method]) {
+		return methodsDataBrowser[method].apply(this, Array.prototype.slice.call(arguments, 1));
 	} else {
-		methodsDB['init'].apply(this,arguments);
+		methodsDataBrowser['init'].apply(this,arguments);
 	}
 }
+// Format : Integer, Double, Float, Currency, Date, DateTime and Date Format
+var Setting_DataBrowser = {
+	title: "",
+	widthPerColumn: 4,
+	widthKeyFilter: 3,
+	showFilter: "Simple",
+	dataSource: {data:[]},
+	metadata: [],
+	dataSimple: [],
+	dataAdvance: [],
+};
+var Setting_ColumnGridDB = {
+	Field: "",
+    Label: "",
+    Format: "",
+    Align: "",
+    ShowIndex: 1,
+    Sortable: true,
+    SimpleFilter: true,
+    AdvanceFilter: true,
+    Aggregate: ""
+};
+var Setting_TypeData = {
+	number: ['integer', 'int', 'double', 'float', 'n0'],
+	date: ['date','datetime'],
+}
 
-/* Sample for use
-$("#TestFilter").ecDataBrowserFilter({
-		dataSource:{data:[
-
-		{
-			"Field": "Name",
-			"Label":"User Name",
-			"Format":"",
-			"Align":"Left",
-			"ShowIndex":1,
-			"Sortable":true,
-			"SimpleFilter":true,
-			"AdvanceFilter":true,
-			"Aggregate":"",
-		},
-		{
-			"Field": "Date",
-			"Label":"Birth Date",
-			"Format":"MMM-yyyy",
-			"Align":"Left",
-			"ShowIndex":2,
-			"Sortable":true,
-			"SimpleFilter":true,
-			"AdvanceFilter":true,
-			"Aggregate":"",
-		},
-		{
-			"Field": "Salary",
-			"Label":"Salary",
-			"Format":"N2",
-			"Align":"Left",
-			"ShowIndex":3,
-			"Sortable":true,
-			"SimpleFilter":true,
-			"AdvanceFilter":true,
-			"Aggregate":"",
-		},
-		{
-			"Field": "Bool",
-			"Label":"Is Active",
-			"Format":"bool",
-			"Align":"Left",
-			"ShowIndex":4,
-			"Sortable":true,
-			"SimpleFilter":false,
-			"AdvanceFilter":true,
-			"Aggregate":"",
-		}
-			]},
-	maxColumn:3
-	});
-*/
-
-var Setting_EcDataBrowserGrid = {
-	columns:{ data:[]},
-	dataSource : { data:[]},
-	dataEdit :{}
-} 
-
-var myMethodsDB ={
+var methodsDataBrowser = {
 	init: function(options){
-		var settings  = $.extend({}, Setting_EcDataBrowserGrid, options || {});
-			myMethodsDB.GenerateGrid(this, settings);
-
-		return this.each(function(){
-			$(this).data("ecDataBrowserGrid", settings);
-		})
-	}, 
-	GenerateGrid : function(elem, options){
-		var $ox = $(elem), $container = $ox.parent(),
-			idGrid = $ox.attr('id');
-		var datax = options.dataSource;
-		var editx = options.dataEdit.data;
-		var columnsx = options.columns.data;
-		//var data = []
-
-		console.log(JSON.stringify(datax));
-
-		var width = "col-md-"+(12/options.maxColumn)
-		var grid ="<div id='grid'></div>";
-		//grid += "nanananaa</div>";
-		$grid = $(grid);
-		$grid.appendTo($ox);	
-
-		$("#grid").kendoGrid({
-		    columns: columnsx,
-		    dataSource: datax,
-		    pageable: true,
-		    editable: editx
+		var settings = $.extend({}, Setting_DataBrowser, options || {});
+		var sortMeta = settings.metadata.sort(function(a, b) {
+		    return parseFloat(a.ShowIndex) - parseFloat(b.ShowIndex);
 		});
+		settings.metadata = sortMeta;
+		// var settingDataSources = $.extend({}, Setting_DataBrowser, settings['dataSource'] || {});
+		return this.each(function () {
+			// $(this).data("ecDataSource", settingDataSources);
+			$(this).data("ecDataBrowser", new $.ecDataBrowserSetting(this, settings));
+			methodsDataBrowser.createElement(this, settings);
+		});
+	},
+	createElement: function(element, options){
+		$(element).html("");
+		var $o = $(element), settingFilter = {}, widthfilter = 0, dataSimple= [], dataAdvance= [];
 
+		$divFilterSimple = $('<div class="col-md-12 ecdatabrowser-filtersimple"></div>');
+		$divFilterSimple.appendTo($o);
+		$divFilterAdvance = $('<div class="col-md-12 ecdatabrowser-filteradvance"></div>');
+		$divFilterAdvance.appendTo($o);
+		console.log(options);
+		for (var key in options.metadata){
+			settingFilter = $.extend({}, Setting_ColumnGridDB, options.metadata[key] || {});
+			widthfilter = 12-options.widthKeyFilter;
+			if (settingFilter.SimpleFilter){
+				$divFilter = $('<div class="col-md-'+options.widthPerColumn+' filter-'+key+'"></div>');
+				$divFilter.appendTo($divFilterSimple);
+				$labelFilter = $("<label class='col-md-"+options.widthKeyFilter+" ecdatabrowser-filter'>"+settingFilter.Label+"</label>");
+				$labelFilter.appendTo($divFilter);
+				$divContentFilter = $('<div class="col-md-'+widthfilter+'"></div>');
+				$divContentFilter.appendTo($divFilter);
+				methodsDataBrowser.createElementFilter(settingFilter, 'simple', key, $divContentFilter, $o);
+				dataSimple.push('#filter-simple-'+key);
+			}
+			if (settingFilter.AdvanceFilter){
+				$divFilter = $('<div class="col-md-'+options.widthPerColumn+' filter-'+key+'"></div>');
+				$divFilter.appendTo($divFilterAdvance);
+				$labelFilter = $("<label class='col-md-"+options.widthKeyFilter+" ecdatabrowser-filter'>"+settingFilter.Label+"</label>");
+				$labelFilter.appendTo($divFilter);
+				$divContentFilter = $('<div class="col-md-'+widthfilter+'"></div>');
+				$divContentFilter.appendTo($divFilter);
+				methodsDataBrowser.createElementFilter(settingFilter, 'advance', key, $divContentFilter, $o);
+				dataAdvance.push('#filter-advance-'+key);
+			}
+		}
+		$(element).data("ecDataBrowser").dataSimple = dataSimple;
+		$(element).data("ecDataBrowser").dataAdvance = dataAdvance;
 
+		$divContainerGrid = $('<div class="col-md-12 ecdatabrowser-gridview"></div>');
+		$divContainerGrid.appendTo($o);
+
+		$divGrid = $('<div class="ecdatabrowser-grid"></div>');
+		$divGrid.appendTo($divContainerGrid);
+
+		methodsDataBrowser.createGrid($divGrid, options, $o);
+
+		$(element).data("ecDataBrowser").ChangeViewFilter(options.showFilter);
+
+	},
+	createElementFilter: function(settingFilter, filterchoose, index, element, id){
+		var $divElementFilter;
+		var dataResult = $.grep(Setting_TypeData.number, function(e){ 
+			return settingFilter.Format.toLowerCase().indexOf(e) >= 0; 
+		});
+		if (dataResult.length>0){
+			// var splitElement = settingFilter.Format.split('#'), formatCreate = '';
+			// for (var i in splitElement){
+			// 	var res = splitElement[i].substring(0,1);
+			// 	if (res == '*'){
+			// 		formatCreate += splitElement[i].substring(1,splitElement[i].length);
+			// 	} 
+			// }
+			$divElementFilter = $('<input idfilter="filter-'+filterchoose+'-'+index+'" typedata="number"/>');
+			$divElementFilter.appendTo(element);
+			id.find('input[idfilter=filter-'+filterchoose+'-'+index+']').kendoNumericTextBox();
+			return '';
+		}
+		dataResult = $.grep(Setting_TypeData.date, function(e){ 
+			return settingFilter.Format.toLowerCase().indexOf(e) >= 0; 
+		});
+		if (dataResult.length>0){
+			var splitElement = settingFilter.Format.split('#'), formatCreate = '';
+			for (var i in splitElement){
+				var res = splitElement[i].substring(0,1);
+				if (res == '*'){
+					formatCreate += splitElement[i].substring(1,splitElement[i].length);
+				} 
+			}
+			$divElementFilter = $('<input idfilter="filter-'+filterchoose+'-'+index+'" typedata="date"/>');
+			$divElementFilter.appendTo(element);
+			id.find('input[idfilter=filter-'+filterchoose+'-'+index+']').kendoDatePicker({
+				format: formatCreate,
+			});
+			return '';
+		}
+		if (settingFilter.Format.toLowerCase() == "string"){
+			$divElementFilter = $('<input type="text" class="form-control input-sm" id="filter-'+filterchoose+'-'+index+'" typedata="string"/>');
+			$divElementFilter.appendTo(element);
+			return '';
+		}
+	},
+	createGrid: function(element, options, id){
+		var colums = [];
+		for(var key in options.metadata){
+			colums.push({
+				field: options.metadata[key].Field,
+				title: options.metadata[key].Label,
+			});
+		}
+		$divElementGrid = $('<div class="col-md-12" idfilter="gridFilterBrowser"></div>');
+		$divElementGrid.appendTo(element);
+		if (options.dataSource.data.length > 0){
+			id.find('div[idfilter=gridFilterBrowser]').kendoGrid({
+				dataSource: {data: options.dataSource.data},
+				columns: colums,
+			});
+		} else {
+			id.find('div[idfilter=gridFilterBrowser]').kendoGrid({
+				dataSource: options.dataSource,
+				columns: colums,
+			});
+		}
+	},
+	setShowFilter: function(res){
+		$(element).data("ecDataBrowser").ChangeViewFilter(res);
+	},
+	getDataFilter: function(){
+		return "";
 	}
 }
 
-
-$.fn.ecDataBrowserGrid = function(method){
-	if(methodsDB[method]){
-		return methodsDB[method].apply(this, Array.prototype.slice.call(arguments, 1));
-	}else{
-		myMethodsDB['init'].apply(this, arguments);
-	}
+$.ecDataBrowserSetting = function(element,options){
+	this.mapdatabrowser = options;
+	this.ChangeViewFilter = function(res){
+		if (res.toLowerCase() == 'simple'){
+			$(element).find('div.ecdatabrowser-filtersimple').show();
+			$(element).find('div.ecdatabrowser-filteradvance').hide();
+		} else {
+			$(element).find('div.ecdatabrowser-filtersimple').hide();
+			$(element).find('div.ecdatabrowser-filteradvance').show();
+		}
+	};
 }

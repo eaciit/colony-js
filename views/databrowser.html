@@ -1,0 +1,85 @@
+<!-- kendo-ui -->
+<link href="/res/js/kendo-ui/styles/kendo.default.min.css" rel="stylesheet">
+<link href="/res/js/kendo-ui/styles/kendo.common-bootstrap.min.css" rel="stylesheet">
+<link href="/res/js/kendo-ui/styles/kendo.bootstrap.min.css" rel="stylesheet">
+<link href="/res/js/kendo-ui/styles/kendo.dataviz.min.css" rel="stylesheet">
+<link href="/res/js/kendo-ui/styles/kendo.dataviz.bootstrap.min.css" rel="stylesheet">
+<script src="/res/js/kendo-ui/js/kendo.all.min.js"></script>
+
+<!-- knockout-kendo -->
+<script src="/res/js/knockout-kendo/knockout-kendo.min.js"></script>
+
+<script src="/res/js/ecdatabrowser.js"></script>
+<link rel="stylesheet" href="/res/css/ecdatabrowser.css" />
+
+<div class="col-md-12" id="exampleDataBrowser">
+</div>
+<script>
+	$('#exampleDataBrowser').ecDataBrowser({
+		title: "",
+		widthPerColumn: 4,
+		showFilter: "Simple",
+		dataSource: {
+
+			data:[
+				{
+		            IDCollection: "UserManagement",
+		            Seq: 40,
+		            _id: "56ac35261d8fafef0e112f2f",
+		            DateInput: "2015/06/21"
+		        }, {
+		            IDCollection: "PurchaseOrderPembelian",
+		            Seq: 5,
+		            _id: "56ac35261d8fafef0e112f30",
+		            DateInput: "2015/06/11"
+		        }, {
+		            IDCollection: "ReceiptOfGoods",
+		            Seq: 1,
+		            _id: "56ac35261d8fafef0e112f31",
+		            DateInput: "2015/06/01"
+		        }
+			]
+		},
+		metadata: [{
+            Field: "_id",
+            Label: "_id",
+            Format: "Integer",
+            Align: "Left",
+            ShowIndex: 1,
+            Sortable: true,
+            SimpleFilter: true,
+            AdvanceFilter: true,
+            Aggregate: ""
+        }, {
+            Field: "Seq",
+            Label: "Seq",
+            Format: "Integer#*n2#",
+            Align: "Right",
+            ShowIndex: 2,
+            Sortable: true,
+            SimpleFilter: true,
+            AdvanceFilter: true,
+            Aggregate: ""
+        }, {
+            Field: "IDCollection",
+            Label: "IDCollection",
+            Format: "String",
+            Align: "Center",
+            ShowIndex: 4,
+            Sortable: false,
+            SimpleFilter: false,
+            AdvanceFilter: true,
+            Aggregate: ""
+        },{
+            Field: "DateInput",
+            Label: "Date Input",
+            Format: "Date#*dd MMM yyyy#",
+            Align: "Left",
+            ShowIndex: 3,
+            Sortable: true,
+            SimpleFilter: true,
+            AdvanceFilter: true,
+            Aggregate: ""
+        }]
+	});
+</script>
