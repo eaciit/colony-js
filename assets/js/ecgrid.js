@@ -3,8 +3,14 @@ $(function() {
 });
 
 var Settings_EcGrid = {
-	serverside: false,
-	dataSource: {data:[]},
+	serverSide: false,
+	dataSource: {
+		data:[],
+		serverModel: {
+			recordsTotal: "",
+			recordsData: "",
+		},
+	},
 	height: 0,
 	width: 0,
 	// groupable: true,
@@ -12,7 +18,7 @@ var Settings_EcGrid = {
 	pageable: {
 		refresh: true,
 		// pageSizes: true,
-		buttonCount: 5
+		buttonCount: 5,
 	},
 	columns: [],
 	footer: {
@@ -21,10 +27,10 @@ var Settings_EcGrid = {
 		displayTemplate: "",
 		field: "",
 	},
-	selectrow: function(res){
+	selectRow: function(res){
 
 	},
-	changepage: function(res){
+	changePage: function(res){
 
 	},
 };
@@ -37,7 +43,7 @@ var Setting_Coloumn = {
 	classHeader: "",
 	attrHeader: {},
 	width: "",
-	lock: false,
+	freeze: false,
 	footer: false,
 	displayTemplateFooter: "",
 	classFooter: "",
