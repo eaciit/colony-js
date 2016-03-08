@@ -12,74 +12,142 @@
 <script src="/res/js/ecdatabrowser.js"></script>
 <link rel="stylesheet" href="/res/css/ecdatabrowser.css" />
 
+<div class="col-md-12" style="margin-bottom:10px;">
+      <button class="btn btn-sm btn-success" id="viewSimple">Simple</button>
+      <button class="btn btn-sm btn-success" id="viewAdvance">Advance</button>
+      <button class="btn btn-sm btn-primary" id="getFilter">GetFilter</button>
+      <button class="btn btn-sm btn-primary" id="getFilter">Post Data Filter</button>
+</div>
 <div class="col-md-12" id="exampleDataBrowser">
 </div>
 <script>
+      $("#viewSimple").on("click",function(){
+            $('#exampleDataBrowser').ecDataBrowser("setShowFilter","simple");
+      });
+      $("#viewAdvance").on("click",function(){
+            $('#exampleDataBrowser').ecDataBrowser("setShowFilter","advance");
+      });
+      $("#getFilter").on("click",function(){
+            console.log($('#exampleDataBrowser').ecDataBrowser("getDataFilter"));
+      });
+      $("#getFilter").on("click",function(){
+            $('#exampleDataBrowser').ecDataBrowser("postDataFilter");
+      });
 	$('#exampleDataBrowser').ecDataBrowser({
 		title: "",
-		widthPerColumn: 4,
+		widthPerColumn: 6,
 		showFilter: "Simple",
-		dataSource: {
-
-			data:[
-				{
-		            IDCollection: "UserManagement",
-		            Seq: 40,
-		            _id: "56ac35261d8fafef0e112f2f",
-		            DateInput: "2015/06/21"
-		        }, {
-		            IDCollection: "PurchaseOrderPembelian",
-		            Seq: 5,
-		            _id: "56ac35261d8fafef0e112f30",
-		            DateInput: "2015/06/11"
-		        }, {
-		            IDCollection: "ReceiptOfGoods",
-		            Seq: 1,
-		            _id: "56ac35261d8fafef0e112f31",
-		            DateInput: "2015/06/01"
-		        }
-			]
-		},
+		dataSource: { 
+                  data:[
+      			{
+                              "DateInput": "2016-02-14T23:22:41.094+07:00",
+                              "IdSatuan": 5,
+                              "KelompokBahan": "asd",
+                              "NamaBahan": "asda",
+                              "Satuan": "Kg",
+                              "UserInput": "arfian",
+                              "_id": 3
+                        }, {
+                              "DateInput": "2016-02-14T23:21:57.581+07:00",
+                              "IdSatuan": 5,
+                              "KelompokBahan": "abc",
+                              "NamaBahan": "aaa",
+                              "Satuan": "Kg",
+                              "UserInput": "arfian",
+                              "_id": 4
+                        }],
+                  // url: "abc.com",
+                  // type: "post",
+                  // fieldTotal: "data.Total",
+                  // fieldData: "data.Datas",
+                  // serverPaging: true,
+                  // pageSize: 10,
+                  // serverSorting: true,
+            },
 		metadata: [{
-            Field: "_id",
-            Label: "_id",
-            Format: "Integer",
-            Align: "Left",
-            ShowIndex: 1,
-            Sortable: true,
-            SimpleFilter: true,
-            AdvanceFilter: true,
-            Aggregate: ""
-        }, {
-            Field: "Seq",
-            Label: "Seq",
-            Format: "Integer#*n2#",
-            Align: "Right",
-            ShowIndex: 2,
-            Sortable: true,
-            SimpleFilter: true,
-            AdvanceFilter: true,
-            Aggregate: ""
-        }, {
-            Field: "IDCollection",
-            Label: "IDCollection",
-            Format: "String",
-            Align: "Center",
-            ShowIndex: 4,
-            Sortable: false,
-            SimpleFilter: false,
-            AdvanceFilter: true,
-            Aggregate: ""
-        },{
-            Field: "DateInput",
-            Label: "Date Input",
-            Format: "Date#*dd MMM yyyy#",
-            Align: "Left",
-            ShowIndex: 3,
-            Sortable: true,
-            SimpleFilter: true,
-            AdvanceFilter: true,
-            Aggregate: ""
-        }]
+                "Field": "UserInput",
+                "Label": "UserInput",
+                "DataType": "String",
+                "Format": "",
+                "Align": "Center",
+                "ShowIndex": 1,
+                "HiddenField": false,
+                "Sortable": true,
+                "SimpleFilter": true,
+                "AdvanceFilter": true,
+                "Aggregate": ""
+            }, {
+                "Field": "KelompokBahan",
+                "Label": "KelompokBahan",
+                "DataType": "String",
+                "Format": "",
+                "Align": "Left",
+                "ShowIndex": 2,
+                "HiddenField": false,
+                "Sortable": false,
+                "SimpleFilter": true,
+                "AdvanceFilter": true,
+                "Aggregate": ""
+            }, {
+                "Field": "NamaBahan",
+                "Label": "NamaBahan",
+                "DataType": "String",
+                "Format": "",
+                "Align": "Right",
+                "ShowIndex": 3,
+                "HiddenField": false,
+                "Sortable": true,
+                "SimpleFilter": true,
+                "AdvanceFilter": true,
+                "Aggregate": ""
+            }, {
+                "Field": "Satuan",
+                "Label": "Satuan",
+                "DataType": "String",
+                "Format": "",
+                "Align": "Center",
+                "ShowIndex": 4,
+                "HiddenField": false,
+                "Sortable": false,
+                "SimpleFilter": false,
+                "AdvanceFilter": true,
+                "Aggregate": ""
+            }, {
+                "Field": "IdSatuan",
+                "Label": "IdSatuan",
+                "DataType": "Integer",
+                "Format": "n2",
+                "Align": "Left",
+                "ShowIndex": 5,
+                "HiddenField": false,
+                "Sortable": false,
+                "SimpleFilter": true,
+                "AdvanceFilter": false,
+                "Aggregate": ""
+            }, {
+                "Field": "_id",
+                "Label": "_id",
+                "DataType": "Integer",
+                "Format": "",
+                "Align": "Left",
+                "ShowIndex": 6,
+                "HiddenField": true,
+                "Sortable": false,
+                "SimpleFilter": false,
+                "AdvanceFilter": false,
+                "Aggregate": ""
+            }, {
+                "Field": "DateInput",
+                "Label": "DateInput",
+                "DataType": "Date",
+                "Format": "dd MMM yyyy",
+                "Align": "Left",
+                "ShowIndex": 7,
+                "HiddenField": false,
+                "Sortable": false,
+                "SimpleFilter": false,
+                "AdvanceFilter": true,
+                "Aggregate": ""
+            }]
 	});
 </script>
