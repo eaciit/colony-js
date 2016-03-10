@@ -61,8 +61,34 @@ var methodsGrid = {
 		});
 	},
 	createElementGrid: function(element, options){
+		$(element).html("");
 		var $o = $(element);
 		$o.data('ecGridDataSource').Reload();
+		var data = $o.data('ecGridDataSource').getDataSource();
+		var headcol = options.columns;
+		console.log(JSON.stringify(data));
+		for(var e=0; e< headcol.length; e++){
+			console.log(headcol[e].title);
+		}
+
+		$divGrid = $('<table class="table ecgrid table-bordered table-striped"></table>');
+		$divGrid.appendTo($o);
+		$tagHead = $('<thead class="ec-gridhead"></thead>');
+		$tagHeadtr = $('<tr></tr>');
+		for (var a = 0; a < headcol.length; a++){
+			$tagHeadth = $('<th>'+headcol[a].title+'</th>');
+			$tagHeadth.appendTo($tagHeadtr);
+		}
+		$tagHeadtr.appendTo($tagHead);
+		$tagHead.appendTo($divGrid);
+		for (var i = 0; i < data.length; i++) {
+			$tagRowtr = $('<tr></tr>');
+			$tagRowtr.appendTo($divGrid);
+			for( var a = 0; a< headcol.length; a++){
+				$tagRowtd = $('<td>'+data[i][headcol[a].field]+'</td>');
+				$tagRowtd.appendTo($tagRowtr);
+			}
+		}
 	},
 	reloadData: function(options){
 
