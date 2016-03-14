@@ -52,15 +52,15 @@
 			{field: "Database", title: "Database"},
 			{field: "Driver", title: "Driver"},
 			{field: "Host", displayTemplateHeader: "<strong> Header</strong>"},
-			{field: "_id", title: "_id"},
+			{field: "_id", title: "_id", displayTemplateFooter: "Total :" },
 			{field: "",
-			displayTemplateRow: function(e){
-				var k =[
-				"<input type='checkbox'  onclick='coba("+'"'+e.Database+'"'+")'/>"
-				].join(" ");
-				return k;
-			}
-		}
+				displayTemplateRow: function(e){
+					var k =[
+					"<input type='checkbox'  onclick='coba("+'"'+e.Database+'"'+")'/>"
+					].join(" ");
+					return k;
+				}
+			}, 
 
 		],
 	});

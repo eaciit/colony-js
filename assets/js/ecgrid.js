@@ -81,7 +81,16 @@ var methodsGrid = {
 		$divGrid.appendTo($o);
 		$tagHead = $('<thead class="ecgrid-head"></thead>');
 		$tagHeadtr = $('<tr></tr>');
+		$tagFoot = $('<tfoot></tfoot>');
+		$tagFoottr = $('<tr></tr>');
 		for (var a = 0; a < headcol.length; a++){
+			if( headcol[a].displayTemplateFooter != undefined){
+				$tagFoottd = $('<th>'+headcol[a].displayTemplateFooter+'</th>');
+				$tagFoottd.appendTo($tagFoottr);
+			}else{
+				$tagFoottd = $('<th>&nbsp</th>');
+				$tagFoottd.appendTo($tagFoottr);
+			}
 			if(headcol[a].title == undefined && headcol[a].displayTemplateHeader == undefined){
 				$tagHeadth = $('<th>&nbsp</th>');
 				$tagHeadth.appendTo($tagHeadtr);
@@ -92,15 +101,17 @@ var methodsGrid = {
 				$tagHeadth = $('<th>'+headcol[a].displayTemplateHeader+'</th>');
 				$tagHeadth.appendTo($tagHeadtr);
 			}
+
 		}
 		$tagHeadtr.appendTo($tagHead);
+		$tagFoottr.appendTo($tagFoot);
+		$tagFoot.appendTo($divGrid);
 		$tagHead.appendTo($divGrid);
 		for (var i = 0; i < data.length; i++) {
 			$tagRowtr = $('<tr></tr>');
 			$tagRowtr.appendTo($divGrid);
 			for( var a = 0; a< headcol.length; a++){
-				//console.log("hasil field ===>>>",headcol[a].displayTemplateRow);
-				if(headcol[a].field == "" && headcol[a].displayTemplateRow(data[i]) != ""){
+				if(headcol[a].field == "" && headcol[a].displayTemplateRow(data[i]) != "" ){
 					$tagRowtd = $('<td>'+headcol[a].displayTemplateRow(data[i])+'</td>');
 				}else{
 					$tagRowtd = $('<td>'+data[i][headcol[a].field]+'</td>');
@@ -108,6 +119,7 @@ var methodsGrid = {
 				$tagRowtd.appendTo($tagRowtr);
 			}
 		}
+
 	},
 	reloadData: function(options){
 
