@@ -36,7 +36,9 @@ var Settings_EcGrid = {
 };
 
 var Setting_Coloumn = {
-	displayTemplate: "",
+	rowTemplate: function(e){
+		return "";	
+	},
 	field: "",
 	title: "",
 	displayTemplateHeader: "",
@@ -53,9 +55,11 @@ var Setting_Coloumn = {
 
 var methodsGrid = {
 	init: function(options){
-		var settings = $.extend({}, Settings_EcLookup, options || {});
+		var settings = $.extend({}, Setting_Coloumn, options || {});
+		var settingDataSources = $.extend({}, Setting_DataSource_Lookup, settings['dataSource'] || {});
 		return this.each(function () {
 			$(this).data("ecGrid", new $.ecGridSetting(this,settings));
+			$(this).data("ecGridColumns", settings);
 			$(this).data("ecGridDataSource", new $.ecDataSource(this,settings['dataSource'], "ecGridDataSource"));
 			methodsGrid.createElementGrid(this, settings);
 		});
@@ -63,17 +67,19 @@ var methodsGrid = {
 	createElementGrid: function(element, options){
 		$(element).html("");
 		var $o = $(element);
+		var $container = $o.parent(), idgrid = $o.attr('id');
+		console.log("idgrid",idgrid);
 		$o.data('ecGridDataSource').Reload();
-		var data = $o.data('ecGridDataSource').getDataSource();
+		var data= $o.data('ecGridDataSource').getDataSource();
 		var headcol = options.columns;
-		console.log(JSON.stringify(data));
-		for(var e=0; e< headcol.length; e++){
-			console.log(headcol[e].title);
-		}
+		console.log("tatatta",$o.data('ecGridColumns').rowTemplate());
+		// for(var e=0; e< headcol.length; e++){
+		// 	console.log(headcol[e].displayTemplate);
+		// }
 
 		$divGrid = $('<table class="table ecgrid table-bordered table-striped"></table>');
 		$divGrid.appendTo($o);
-		$tagHead = $('<thead class="ec-gridhead"></thead>');
+		$tagHead = $('<thead class="ecgrid-head"></thead>');
 		$tagHeadtr = $('<tr></tr>');
 		for (var a = 0; a < headcol.length; a++){
 			$tagHeadth = $('<th>'+headcol[a].title+'</th>');
@@ -85,7 +91,13 @@ var methodsGrid = {
 			$tagRowtr = $('<tr></tr>');
 			$tagRowtr.appendTo($divGrid);
 			for( var a = 0; a< headcol.length; a++){
-				$tagRowtd = $('<td>'+data[i][headcol[a].field]+'</td>');
+				
+				console.log("hasil field ===>>>",headcol[a].rowTemplate);
+				if(headcol[a].field == "" && headcol[a].rowTemplate(data[i]) != ""){
+					$tagRowtd = $('<td>'+headcol[a].rowTemplate(data[i])+'</td>');
+				}else{
+					$tagRowtd = $('<td>'+data[i][headcol[a].field]+'</td>');
+				}
 				$tagRowtd.appendTo($tagRowtr);
 			}
 		}
@@ -103,5 +115,6 @@ $.fn.ecGrid = function (method) {
 }
 
 $.ecGridSetting = function(element, options){
-	
+	//alert('masuk');
+	//console.log("optionsnya ---->>", options);
 }

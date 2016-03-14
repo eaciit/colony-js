@@ -52,7 +52,55 @@
 			{field: "Database", title: "Database"},
 			{field: "Driver", title: "Driver"},
 			{field: "Host", title: "Host"},
-			{field: "_id", title: "_id"}
-		]
+			{field: "_id", title: "_id"},
+			{field: "", title:"", 
+			rowTemplate: function(e){
+				//console.log("datanya", e);
+				var k =[
+				"<input type='checkbox'  onclick='coba("+'"'+e.Database+'"'+")'/>"
+				].join(" ");
+				return k;
+			}
+		}
+
+		],
 	});
+
+function coba(e){
+	alert('halo '+e);
+}
 </script>
+<style type="text/css">
+	.th-ecgrid{
+		border-right: 1px solid #ddd;
+	}
+
+	.grid-header{
+		border-top: 1px solid #ddd;
+		border-right: 1px solid #ddd;
+		border-left: 1px solid #ddd;
+	}
+	.content{
+		position: relative;
+	    width: 100%;
+	    overflow-x: hidden;
+	    overflow-y: scrolls;
+	    zoom: 1;
+	    min-height: 100px;
+	    border: 1px solid #ddd;
+	}
+
+	/*.td-grid, .th-ecgrid{
+		width: 10%;
+	}*/
+
+	col{
+		width: 10%;
+	}
+	.ecfooter, .echead, .content{
+		margin-bottom: 0px;
+	}
+	.ecfooter{
+		border: 1px solid #ddd;
+	}
+</style>
