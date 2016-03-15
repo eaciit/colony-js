@@ -1,3 +1,7 @@
+.ec-gridhead {
+  background-color: #F5F5F5; }
 
+.ecgrid {
+  overflow-y: scroll; }
 
 /*# sourceMappingURL=ecgrid.css.map */
