@@ -36,7 +36,7 @@ var Settings_EcGrid = {
 };
 
 var Setting_Coloumn = {
-	rowTemplate: function(e){
+	displayTemplateRow: function(e){
 		return "";	
 	},
 	field: "",
@@ -68,39 +68,58 @@ var methodsGrid = {
 		$(element).html("");
 		var $o = $(element);
 		var $container = $o.parent(), idgrid = $o.attr('id');
-		console.log("idgrid",idgrid);
+		//console.log("idgrid",idgrid);
 		$o.data('ecGridDataSource').Reload();
 		var data= $o.data('ecGridDataSource').getDataSource();
 		var headcol = options.columns;
-		console.log("tatatta",$o.data('ecGridColumns').rowTemplate());
+		//console.log("tatatta",$o.data('ecGridColumns').rowTemplate());
 		// for(var e=0; e< headcol.length; e++){
-		// 	console.log(headcol[e].displayTemplate);
+		// 	console.log(headcol[e].displayTemplateRow);
 		// }
 
 		$divGrid = $('<table class="table ecgrid table-bordered table-striped"></table>');
 		$divGrid.appendTo($o);
 		$tagHead = $('<thead class="ecgrid-head"></thead>');
 		$tagHeadtr = $('<tr></tr>');
+		$tagFoot = $('<tfoot></tfoot>');
+		$tagFoottr = $('<tr></tr>');
 		for (var a = 0; a < headcol.length; a++){
-			$tagHeadth = $('<th>'+headcol[a].title+'</th>');
-			$tagHeadth.appendTo($tagHeadtr);
+			if( headcol[a].displayTemplateFooter != undefined){
+				$tagFoottd = $('<th>'+headcol[a].displayTemplateFooter+'</th>');
+				$tagFoottd.appendTo($tagFoottr);
+			}else{
+				$tagFoottd = $('<th>&nbsp</th>');
+				$tagFoottd.appendTo($tagFoottr);
+			}
+			if(headcol[a].title == undefined && headcol[a].displayTemplateHeader == undefined){
+				$tagHeadth = $('<th>&nbsp</th>');
+				$tagHeadth.appendTo($tagHeadtr);
+			}else if(headcol[a].title != "" && headcol[a].displayTemplateHeader == undefined){
+				$tagHeadth = $('<th>'+headcol[a].title+'</th>');
+				$tagHeadth.appendTo($tagHeadtr);
+			}else{
+				$tagHeadth = $('<th>'+headcol[a].displayTemplateHeader+'</th>');
+				$tagHeadth.appendTo($tagHeadtr);
+			}
+
 		}
 		$tagHeadtr.appendTo($tagHead);
+		$tagFoottr.appendTo($tagFoot);
+		$tagFoot.appendTo($divGrid);
 		$tagHead.appendTo($divGrid);
 		for (var i = 0; i < data.length; i++) {
 			$tagRowtr = $('<tr></tr>');
 			$tagRowtr.appendTo($divGrid);
 			for( var a = 0; a< headcol.length; a++){
-				
-				console.log("hasil field ===>>>",headcol[a].rowTemplate);
-				if(headcol[a].field == "" && headcol[a].rowTemplate(data[i]) != ""){
-					$tagRowtd = $('<td>'+headcol[a].rowTemplate(data[i])+'</td>');
+				if(headcol[a].field == "" && headcol[a].displayTemplateRow(data[i]) != "" ){
+					$tagRowtd = $('<td>'+headcol[a].displayTemplateRow(data[i])+'</td>');
 				}else{
 					$tagRowtd = $('<td>'+data[i][headcol[a].field]+'</td>');
 				}
 				$tagRowtd.appendTo($tagRowtr);
 			}
 		}
+
 	},
 	reloadData: function(options){
 

@@ -51,17 +51,16 @@
 			{field: "ConnectionName", title: "Nama koneksi"},
 			{field: "Database", title: "Database"},
 			{field: "Driver", title: "Driver"},
-			{field: "Host", title: "Host"},
-			{field: "_id", title: "_id"},
-			{field: "", title:"", 
-			rowTemplate: function(e){
-				//console.log("datanya", e);
-				var k =[
-				"<input type='checkbox'  onclick='coba("+'"'+e.Database+'"'+")'/>"
-				].join(" ");
-				return k;
-			}
-		}
+			{field: "Host", displayTemplateHeader: "<strong> Header</strong>"},
+			{field: "_id", title: "_id", displayTemplateFooter: "Total :" },
+			{field: "",
+				displayTemplateRow: function(e){
+					var k =[
+					"<input type='checkbox'  onclick='coba("+'"'+e.Database+'"'+")'/>"
+					].join(" ");
+					return k;
+				}
+			}, 
 
 		],
 	});
