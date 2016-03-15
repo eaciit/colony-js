@@ -56,6 +56,7 @@ var Settings_EcLookup = {
 	idText: 'value',
 	// displayFields: 'value',
 	placeholder: 'Input Type Here !',
+	minHeight : '0px',
 	minChar: 0,
 	displayTemplate: function(){
 		return "";
@@ -94,7 +95,7 @@ var methodsLookup = {
 		var $o = $(element), $container = $o.parent(), idLookup = $o.attr('id');
 		$o.css({'display':'none'});
 
-		$divSearch = $('<div class="eclookup-container"></div>');
+		$divSearch = $('<div class="eclookup-container" style="min-height:'+options.minHeight+'"></div>');
 		$divSearch.appendTo($container);
 
 		$ulLookup = $('<ul class="eclookup-list"></ul>');
@@ -620,7 +621,7 @@ var methodsLookupDD = {
 	createSearchLookup: function(element, options){
 		var $o = $(element), $container = $o.parent(), idLookup = $o.attr('id');
 		$o.css({'display':'none'});
-		$divSearch = $('<div class="eclookup-container"></div>');
+		$divSearch = $('<div class="eclookup-container" style="min-height:'+options.minHeight+'"></div>');
 		$divSearch.appendTo($container);
 
 		$ulLookup = $('<ul class="eclookup-list"></ul>');
@@ -780,7 +781,7 @@ $.ecDataSourceDDLookup = function(element,options){
 					$btnRemoveLookup.bind('click').click(function(){
 						$(elementLookup).parent().find('li.eclookup-txt').css('display','block');
 						$(this).parent().remove();
-						// $searchtext.val('');
+						$searchtext.val('');
 						$searchtext.focus();
 						var dataResult = $.grep($(elementLookup).data('ecLookupDD').ParamDataSource.dataSelect, function(e){ 
 							var idGrep = idField;
@@ -791,9 +792,9 @@ $.ecDataSourceDDLookup = function(element,options){
 						$(elementLookup).data('ecLookupDD').ParamDataSource.dataSelect = dataResult;
 					});
 					$btnRemoveLookup.appendTo($liLookup);
-
-					// $searchtext.val('');
+					$searchtext.val('');
 					$searchtext.focus();
+					$(elementLookup).parent().find('div.eclookup-dropdown').hide();
 
 					var dataResult = $.grep(data, function(e){ 
 						var idGrep = idField;

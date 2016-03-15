@@ -37,14 +37,30 @@ var Setting_QueryBuilder = {
 	title : "",
 	widthCommand : 2,
 	widthEditor : 10,
+	command : ["select","insert","update","delete","command","from","where","order","take","skip"],
+	optionEditor : [],
+}
+
+var Setting_Editor = {
 	inputEditorName : 'textquery',
 	inputEditorId : 'textquery',
-	command : ["select","insert","update","delete","command","from","where","order","take","skip"],
+	dataSource : {
+		data : commandList
+	},
+	inputType: 'multiple',
+	inputSearch: 'key', 
+	idField: 'key', 
+	idText: 'key',
+	displayFields: 'key',
+	minHeight:'100px', 
+
 }
 
 var methodsQueryBuilder = {
 	init: function(options){
+		var editor = $.extend({}, Setting_Editor, options.optionEditor || {});
 		var settings = $.extend({}, Setting_QueryBuilder, options || {});
+		settings.optionEditor = editor;
 		return this.each(function () {
 			methodsQueryBuilder.createElement(this, settings);
 		});
@@ -58,18 +74,18 @@ var methodsQueryBuilder = {
 		$divPanelBody.appendTo($content);
 		$divInitialRow = $('<div class= "row form-datasource"></div>');
 		$divInitialRow.appendTo($divPanelBody);
-		$divCommand = $('<div class="col-md-'+options.widthCommand+' nav-command"></div>');
-		$divCommand.appendTo($divInitialRow);
-		$labelCommand = $('<label class="title-command">Commands</label>');
-		$labelCommand.appendTo($divCommand);
-		$divQueryEditor = $('<div class="col-md-'+options.widthEditor+' area-command"></div>');
-		$divQueryEditor.appendTo($divInitialRow);
-		$labelEditor = $('<label class="title-command">Query Editor</label>');
-		$labelEditor.appendTo($divQueryEditor);
-		$inputEditor = $('<textarea id="'+options.inputEditorId+'" name="'+options.inputEditorName+'" placeholder="Input query commands"/>');
-		$inputEditor.appendTo($divQueryEditor);
+		
+		methodsQueryBuilder.createCommandList(options);
+		methodsQueryBuilder.createEditor(options);
+	},
 
-		$ulCommand = $('<ul class="nav"></ul>');
+	createCommandList : function(options, id){
+		$divCommand = $('<div class="col-md-'+options.widthCommand+' ecquerybuilder-commandlist nav-command"></div>');
+		$divCommand.appendTo($divInitialRow);
+		$labelCommand = $('<label class="title-command ecquerybuilder-commandlist">Commands</label>');
+		$labelCommand.appendTo($divCommand);
+
+		$ulCommand = $('<ul class="nav ecquerybuilder-commandlist"></ul>');
 		$ulCommand.appendTo($divCommand);
 
 		for(var key in options.command){
@@ -80,22 +96,28 @@ var methodsQueryBuilder = {
 			   }
 			}
 		}
-
-		$('#'+options.inputEditorName+'').ecLookupDD({
-			dataSource:{
-				data: commandList,
-				resultData: function(a){
-							console.log(a);
-							return a;
-						}
-			}, 
-			inputType: 'multiple',
-			inputSearch: 'key', 
-			idField: 'id', 
-			idText: 'key', 
-		});
-		
 	},
+
+	createEditor : function(options, id){
+		var opt = options.optionEditor;
+		$divQueryEditor = $('<div class="col-md-'+options.widthEditor+' area-command"></div>');
+		$divQueryEditor.appendTo($divInitialRow);
+		$labelEditor = $('<label class="title-command">Query Editor</label>');
+		$labelEditor.appendTo($divQueryEditor);
+		$inputEditor = $('<input type="text" id="'+opt.inputEditorId+'" name="'+opt.inputEditorName+'" placeholder="Input query commands"/>');
+		$inputEditor.appendTo($divQueryEditor);
+
+		$('#'+opt.inputEditorName+'').ecLookupDD({
+			dataSource: opt.dataSource, 
+			inputType: opt.inputType,
+			inputSearch: opt.inputSearch, 
+			idField: opt.idField, 
+			idText: opt.idText,
+			displayFields: opt.displayFields,
+			minHeight: opt.minHeight, 
+		});
+	},
+
 }
 
 
