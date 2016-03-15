@@ -1,3 +1,11 @@
+$.fn.ecGrid = function (method) {
+	if (methodsGrid[method]) {
+		return methodsGrid[method].apply(this, Array.prototype.slice.call(arguments, 1));
+	} else {
+		methodsGrid['init'].apply(this,arguments);
+	}
+}
+
 $(function() {
 	
 });
@@ -36,7 +44,7 @@ var Settings_EcGrid = {
 };
 
 var Setting_Coloumn = {
-	displayTemplateRow: function(e){
+	displayTemplateRow: function(){
 		return "";	
 	},
 	field: "",
@@ -46,7 +54,6 @@ var Setting_Coloumn = {
 	attrHeader: {},
 	width: "",
 	freeze: false,
-	footer: false,
 	displayTemplateFooter: "",
 	classFooter: "",
 	attrFooter: {},
@@ -55,68 +62,65 @@ var Setting_Coloumn = {
 
 var methodsGrid = {
 	init: function(options){
-		var settings = $.extend({}, Setting_Coloumn, options || {});
+		var settings = $.extend({}, Settings_EcGrid, options || {});
 		var settingDataSources = $.extend({}, Setting_DataSource_Lookup, settings['dataSource'] || {});
 		return this.each(function () {
 			$(this).data("ecGrid", new $.ecGridSetting(this,settings));
-			$(this).data("ecGridColumns", settings);
 			$(this).data("ecGridDataSource", new $.ecDataSource(this,settings['dataSource'], "ecGridDataSource"));
 			methodsGrid.createElementGrid(this, settings);
 		});
 	},
 	createElementGrid: function(element, options){
 		$(element).html("");
-		var $o = $(element);
-		var $container = $o.parent(), idgrid = $o.attr('id');
-		//console.log("idgrid",idgrid);
+		var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id'), columndata = {}, footerTemp = false;
 		$o.data('ecGridDataSource').Reload();
-		var data= $o.data('ecGridDataSource').getDataSource();
-		var headcol = options.columns;
-		//console.log("tatatta",$o.data('ecGridColumns').rowTemplate());
-		// for(var e=0; e< headcol.length; e++){
-		// 	console.log(headcol[e].displayTemplateRow);
-		// }
+		var records = $o.data('ecGridDataSource').getDataSource();
 
 		$divGrid = $('<table class="table ecgrid table-bordered table-striped"></table>');
 		$divGrid.appendTo($o);
 		$tagHead = $('<thead class="ecgrid-head"></thead>');
+		$tagHead.appendTo($divGrid);
 		$tagHeadtr = $('<tr></tr>');
-		$tagFoot = $('<tfoot></tfoot>');
+		$tagHeadtr.appendTo($tagHead);
+		$tagbody = $('<tbody class="ecgrid-body"></tbody>');
+		$tagbody.appendTo($divGrid);
+
 		$tagFoottr = $('<tr></tr>');
-		for (var a = 0; a < headcol.length; a++){
-			if( headcol[a].displayTemplateFooter != undefined){
-				$tagFoottd = $('<th>'+headcol[a].displayTemplateFooter+'</th>');
-				$tagFoottd.appendTo($tagFoottr);
-			}else{
-				$tagFoottd = $('<th>&nbsp</th>');
-				$tagFoottd.appendTo($tagFoottr);
+		for (var a = 0; a < options.columns.length; a++){
+			columndata = $.extend({}, Setting_Coloumn, options.columns[a] || {});
+			$tagFoottd = $('<th>&nbsp;</th>');
+			if(columndata.displayTemplateFooter != ""){
+				footerTemp = true;
+				$tagFoottd = $('<th>'+columndata.displayTemplateFooter+'</th>');
 			}
-			if(headcol[a].title == undefined && headcol[a].displayTemplateHeader == undefined){
-				$tagHeadth = $('<th>&nbsp</th>');
-				$tagHeadth.appendTo($tagHeadtr);
-			}else if(headcol[a].title != "" && headcol[a].displayTemplateHeader == undefined){
-				$tagHeadth = $('<th>'+headcol[a].title+'</th>');
-				$tagHeadth.appendTo($tagHeadtr);
-			}else{
-				$tagHeadth = $('<th>'+headcol[a].displayTemplateHeader+'</th>');
-				$tagHeadth.appendTo($tagHeadtr);
-			}
+			$tagFoottd.appendTo($tagFoottr);
+
+			$tagHeadth = $('<th>&nbsp;</th>');
+			if (columndata.displayTemplateHeader != "")
+				$tagHeadth = $('<th>'+columndata.displayTemplateHeader+'</th>');
+			else if (columndata.title != "" && columndata.displayTemplateHeader == "")
+				$tagHeadth = $('<th>'+columndata.title+'</th>');
+			
+			$tagHeadth.appendTo($tagHeadtr);
 
 		}
-		$tagHeadtr.appendTo($tagHead);
-		$tagFoottr.appendTo($tagFoot);
-		$tagFoot.appendTo($divGrid);
-		$tagHead.appendTo($divGrid);
-		for (var i = 0; i < data.length; i++) {
-			$tagRowtr = $('<tr></tr>');
-			$tagRowtr.appendTo($divGrid);
-			for( var a = 0; a< headcol.length; a++){
-				if(headcol[a].field == "" && headcol[a].displayTemplateRow(data[i]) != "" ){
-					$tagRowtd = $('<td>'+headcol[a].displayTemplateRow(data[i])+'</td>');
+		if (footerTemp){
+			$tagFoot = $('<tfoot></tfoot>');
+			$tagFoottr.appendTo($tagFoot);
+			$tagFoot.appendTo($divGrid);
+		}
+
+		for (var i = 0; i < records.length; i++) {
+			$tagRow = $('<tr></tr>');
+			$tagRow.appendTo($tagbody);
+			for( var a = 0; a < options.columns.length; a++){
+				columndata = $.extend({}, Setting_Coloumn, options.columns[a] || {});
+				if(columndata.displayTemplateRow() != "" ){
+					$tagColoumn = $('<td>'+columndata.displayTemplateRow()+'</td>');
 				}else{
-					$tagRowtd = $('<td>'+data[i][headcol[a].field]+'</td>');
+					$tagColoumn = $('<td>'+records[i][columndata.field]+'</td>');
 				}
-				$tagRowtd.appendTo($tagRowtr);
+				$tagColoumn.appendTo($tagRow);
 			}
 		}
 
@@ -125,15 +129,7 @@ var methodsGrid = {
 
 	},
 }
-$.fn.ecGrid = function (method) {
-	if (methodsGrid[method]) {
-		return methodsGrid[method].apply(this, Array.prototype.slice.call(arguments, 1));
-	} else {
-		methodsGrid['init'].apply(this,arguments);
-	}
-}
 
 $.ecGridSetting = function(element, options){
-	//alert('masuk');
-	//console.log("optionsnya ---->>", options);
+
 }

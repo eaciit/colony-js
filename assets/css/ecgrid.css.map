@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "",
-"sources": [],
+"mappings": "AAAA,YAAY;EACX,gBAAgB,EAAE,OAAO;;AAE1B,OAAO;EACN,UAAU,EAAE,MAAM",
+"sources": ["ecgrid.sass"],
 "names": [],
 "file": "ecgrid.css"
 }
