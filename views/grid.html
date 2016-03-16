@@ -16,6 +16,7 @@
 			    "Database": "eccolmag",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "8002",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "200_eccolmag"
@@ -25,6 +26,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "8003",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -34,6 +36,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "8005",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -43,6 +46,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "8802",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -52,6 +56,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "8402",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -61,6 +66,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "8092",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -70,6 +76,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "8022",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -79,6 +86,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "8332",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -88,6 +96,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "3333",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -97,6 +106,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "9202",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -106,6 +116,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "2000",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -115,6 +126,7 @@
 			    "Database": "ecexample",
 			    "Driver": "mongo",
 			    "Host": "localhost",
+			    "Port": "9999",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "example"
@@ -132,6 +144,7 @@
 			    "Database": "ecDataDummy",
 			    "Driver": "mysql",
 			    "Host": "localhost",
+			    "Port": "4343",
 			    "Password": "",
 			    "UserName": "",
 			    "_id": "dataDummy"
@@ -139,10 +152,14 @@
 			]
 		}, 
 		columns: [
-			{field: "ConnectionName", title: "Nama koneksi"},
-			{field: "Database", title: "Database"},
+			{field: "ConnectionName", title: "Nama koneksi", classHeader: "cobaClass", classFooter: "cobaClass"},
+			{field: "Database", title: "Database", attrColoumn: {type:"db"}},
 			{field: "Driver", title: "Driver"},
-			{field: "Host", displayTemplateHeader: "<strong> Header</strong>"},
+			{field: "Host", displayTemplateHeader: "<strong> Host & Port</strong>", 
+				displayTemplateRow: function(){
+					return "<label>#*Host#: #*Port#</label>";
+				}
+			},
 			{field: "_id", title: "_id", displayTemplateFooter: "Total :" },
 			{field: "",
 				displayTemplateRow: function(){
@@ -160,5 +177,12 @@
 		},
 	});
 </script>
+
+<style>
+	.cobaClass {
+		background-color: grey;
+		color: white;
+	}
+</style>
 
 

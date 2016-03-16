@@ -49,6 +49,7 @@ var Setting_Coloumn = {
 	},
 	field: "",
 	title: "",
+	attrColoumn: {},
 	displayTemplateHeader: "",
 	classHeader: "",
 	attrHeader: {},
@@ -93,6 +94,7 @@ var methodsGrid = {
 				footerTemp = true;
 				$tagFoottd = $('<th>'+columndata.displayTemplateFooter+'</th>');
 			}
+			$tagFoottd.addClass(options.columns[a].classFooter);
 			$tagFoottd.appendTo($tagFoottr);
 
 			$tagHeadth = $('<th>&nbsp;</th>');
@@ -100,7 +102,7 @@ var methodsGrid = {
 				$tagHeadth = $('<th>'+columndata.displayTemplateHeader+'</th>');
 			else if (columndata.title != "" && columndata.displayTemplateHeader == "")
 				$tagHeadth = $('<th>'+columndata.title+'</th>');
-			
+			$tagHeadth.addClass(options.columns[a].classHeader);
 			$tagHeadth.appendTo($tagHeadtr);
 
 		}
@@ -110,16 +112,27 @@ var methodsGrid = {
 			$tagFoot.appendTo($divGrid);
 		}
 
+		var splitElement = "", elementCreate = "";
 		for (var i = 0; i < records.length; i++) {
 			$tagRow = $('<tr></tr>');
 			$tagRow.appendTo($tagbody);
 			for( var a = 0; a < options.columns.length; a++){
 				columndata = $.extend({}, Setting_Coloumn, options.columns[a] || {});
 				if(columndata.displayTemplateRow() != "" ){
-					$tagColoumn = $('<td>'+columndata.displayTemplateRow()+'</td>');
+					splitElement = columndata.displayTemplateRow().split('#'); elementCreate = '';
+					for (var key in splitElement){
+						var res = splitElement[key].substring(0,1);
+						if (res == '*'){
+							elementCreate += records[i][splitElement[key].substring(1,splitElement[key].length)];
+						} else {
+							elementCreate += splitElement[key];
+						}
+					}
+					$tagColoumn = $('<td>'+elementCreate+'</td>');
 				}else{
 					$tagColoumn = $('<td>'+records[i][columndata.field]+'</td>');
 				}
+				$tagColoumn.attr(columndata.attrColoumn);
 				$tagColoumn.appendTo($tagRow);
 			}
 		}
