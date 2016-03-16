@@ -39,6 +39,7 @@ var Setting_QueryBuilder = {
 	widthEditor : 10,
 	command : ["select","insert","update","delete","command","from","where","order","take","skip"],
 	optionEditor : [],
+	optionModal:[],
 }
 
 var Setting_Editor = {
@@ -56,11 +57,27 @@ var Setting_Editor = {
 
 }
 
+var Setting_ModalQuery = {
+	title : 'Data for',
+	header :'<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+				'<span aria-hidden="true">&times;</span>'+
+			'</button>',
+	footer: '<button type="button" class="btn btn-sm btn-warning" data-dismiss="modal">'+
+				'<span class="glyphicon glyphicon-remove"></span> Close'+
+			'</button>'+
+			'<button type="button" class="btn btn-sm btn-primary">'+
+				'<span class="glyphicon glyphicon-save"></span> Save'+
+			'</button>',
+	idModal: '',
+}
+
 var methodsQueryBuilder = {
 	init: function(options){
+		var modalquery = $.extend({}, Setting_ModalQuery, options.optionModal || {});
 		var editor = $.extend({}, Setting_Editor, options.optionEditor || {});
 		var settings = $.extend({}, Setting_QueryBuilder, options || {});
 		settings.optionEditor = editor;
+		settings.optionModal = modalquery;
 		return this.each(function () {
 			methodsQueryBuilder.createElement(this, settings);
 		});
@@ -69,29 +86,35 @@ var methodsQueryBuilder = {
 	createElement: function(element, options){
 		$(element).html("");
 		var $content = $(element);
+		var id = element.id;
 
 		$divPanelBody = $('<div class="panel-body ecquerybuilder-panel"></div>');
 		$divPanelBody.appendTo($content);
 		$divInitialRow = $('<div class= "row form-datasource"></div>');
 		$divInitialRow.appendTo($divPanelBody);
 		
-		methodsQueryBuilder.createCommandList(options);
-		methodsQueryBuilder.createEditor(options);
+		methodsQueryBuilder.createCommandList(element, options, id);
+		methodsQueryBuilder.createEditor(options, id);
 	},
 
-	createCommandList : function(options, id){
-		$divCommand = $('<div class="col-md-'+options.widthCommand+' ecquerybuilder-commandlist nav-command"></div>');
+	createCommandList : function(element,options, id){
+		$divCommand = $('<div class="col-md-'+options.widthCommand+' ecquerybuilder-commandlist nav-command" id="command-'+id+'"></div>');
 		$divCommand.appendTo($divInitialRow);
-		$labelCommand = $('<label class="title-command ecquerybuilder-commandlist">Commands</label>');
+		$labelCommand = $('<label class="title-command ecquerybuilder-commandlist" id="label-'+id+'">Commands</label>');
 		$labelCommand.appendTo($divCommand);
 
-		$ulCommand = $('<ul class="nav ecquerybuilder-commandlist"></ul>');
+		$ulCommand = $('<ul class="nav ecquerybuilder-commandlist" id="ul-'+id+'"></ul>');
 		$ulCommand.appendTo($divCommand);
 
 		for(var key in options.command){
 			for(var i = 0; i < commandList.length; i++) {
-			   if(commandList[i].key === options.command[key]) {
-			     $listCommand = $('<li><a href="#"><span class="fa fa-caret-right"></span>&nbsp;<span style="text-transform: capitalize;">'+commandList[i].key+'</span></a></li>');
+			   if(commandList[i].key === options.command[key]) {var commandKey = commandList[i].key;
+			     $listCommand = $('<li><a href="#" id="li-'+id+'-'+commandList[i].key+'"><span class="fa fa-caret-right"></span>&nbsp;<span style="text-transform: capitalize;">'+commandList[i].key+'</span></a></li>');
+				  (function(i) {
+			           $listCommand.click( function(){
+			           $.fn.ecQueryBuilderShowModal(element, options,commandList[i].key,id);
+			         });
+			      }(i));
 				 $listCommand.appendTo($ulCommand);
 			   }
 			}
@@ -100,14 +123,14 @@ var methodsQueryBuilder = {
 
 	createEditor : function(options, id){
 		var opt = options.optionEditor;
-		$divQueryEditor = $('<div class="col-md-'+options.widthEditor+' area-command"></div>');
+		$divQueryEditor = $('<div class="col-md-'+options.widthEditor+' area-command ecquerybuilder-editor"></div>');
 		$divQueryEditor.appendTo($divInitialRow);
-		$labelEditor = $('<label class="title-command">Query Editor</label>');
+		$labelEditor = $('<label class="title-command ecquerybuilder-editor-label">Query Editor</label>');
 		$labelEditor.appendTo($divQueryEditor);
-		$inputEditor = $('<input type="text" id="'+opt.inputEditorId+'" name="'+opt.inputEditorName+'" placeholder="Input query commands"/>');
+		$inputEditor = $('<input type="text" id="input-'+id+'-'+opt.inputEditorId+'" name="'+opt.inputEditorName+'" placeholder="Input query commands"/>');
 		$inputEditor.appendTo($divQueryEditor);
 
-		$('#'+opt.inputEditorName+'').ecLookupDD({
+		$('#input-'+id+'-'+opt.inputEditorName+'').ecLookupDD({
 			dataSource: opt.dataSource, 
 			inputType: opt.inputType,
 			inputSearch: opt.inputSearch, 
@@ -118,7 +141,112 @@ var methodsQueryBuilder = {
 		});
 	},
 
+/*	modalShow : function(element,options, queryBuilderMode, id){
+		var $content = $(element);
+		var opt = options.optionModal;
+		var idModal = (opt.idModal == '' ? "modal-"+id : opt.idModal);
+
+		$divInitialModal = $('<div class="modal fade modal-query" tabindex="-1" role="dialog" id="'+idModal+'"></div>');
+		$divInitialModal.appendTo($content);
+		$divInitialDialog = $('<div class="modal-dialog ecquerybuilder-modal"></div>');
+		$divInitialDialog.appendTo($divInitialModal);
+		$divModalContent = $('<div class="modal-content"></div>');
+		$divModalContent.appendTo($divInitialDialog);
+		$divModalHeader = $('<div class="modal-header"></div>');
+		$divModalHeader.appendTo($divModalContent);
+		$divModalBody = $('<div class="modal-body query-of-'+queryBuilderMode+'"></div>');
+		$divModalBody.appendTo($divModalContent);
+		$divModalFooter = $('<div class="modal-footer"></div>');
+		$divModalFooter.appendTo($divModalContent);
+		$header = $(opt.header);
+		$header.appendTo($divModalHeader);
+		$title = $('<h4>Data for <span class="ecquerybuilder-modal-title">'+queryBuilderMode+'</span></h4>');
+		$title.appendTo($divModalHeader);
+		$footer = $(opt.footer);
+		$footer.appendTo($divModalFooter);
+
+		if(queryBuilderMode === 'select'){
+			$modalBody = $('<div class="form-group">'+
+		    		'<label class="col-md-4 filter-label">Fields</label>'+
+		        	'<div class="col-md-5">'+
+		        		'<input type="text" class="full-width form-control" >'+
+		        	'</div>'+
+		        	'<div class="clearfix"></div>'+
+	        	'</div>');
+		    $modalBody.appendTo($divModalBody);
+		    $('#'+idModal).modal('show');
+		}
+		else if(queryBuilderMode === 'insert' || queryBuilderMode === 'update'){
+			$(".modal-body").empty();
+			$modalBody = $('<div class="col-md-12" style="margin-bottom: 10px;">'+
+					'<button class="btn btn-sm btn-primary">'+
+						'<span class="glyphicon glyphicon-plus"></span>'+
+						'Add more'+
+					'</button>'+
+				'</div>');
+		    $modalBody.appendTo($divModalBody);
+		    $('#'+idModal).modal('show');
+		    
+		}
+
+		// $('#'+idModal).on('hidden.bs.modal', function () {
+		//     $(this).modal({show: false});
+		// 	$(".modal-body").empty();
+		// });
+		console.log(queryBuilderMode);
+
+	}*/
 }
 
+$.fn.ecQueryBuilderShowModal = function(element,options, queryBuilderMode, idModal){
+		var $content = $(element);
+		var opt = options.optionModal;
+		var idModal = (opt.idModal == '' ? "modal-"+id : opt.idModal);
+
+		$divInitialModal = $('<div class="modal fade modal-query" tabindex="-1" role="dialog" id="'+idModal+'"></div>');
+		$divInitialModal.appendTo($content);
+		$divInitialDialog = $('<div class="modal-dialog ecquerybuilder-modal"></div>');
+		$divInitialDialog.appendTo($divInitialModal);
+		$divModalContent = $('<div class="modal-content"></div>');
+		$divModalContent.appendTo($divInitialDialog);
+		$divModalHeader = $('<div class="modal-header"></div>');
+		$divModalHeader.appendTo($divModalContent);
+		$divModalBody = $('<div class="modal-body query-of-'+queryBuilderMode+'"></div>');
+		$divModalBody.appendTo($divModalContent);
+		$divModalFooter = $('<div class="modal-footer"></div>');
+		$divModalFooter.appendTo($divModalContent);
+		$header = $(opt.header);
+		$header.appendTo($divModalHeader);
+		$title = $('<h4>Data for <span class="ecquerybuilder-modal-title">'+queryBuilderMode+'</span></h4>');
+		$title.appendTo($divModalHeader);
+		$footer = $(opt.footer);
+		$footer.appendTo($divModalFooter);
+
+/*		if(queryBuilderMode === 'select'){
+			$modalBody = $('<div class="form-group">'+
+		    		'<label class="col-md-4 filter-label">Fields</label>'+
+		        	'<div class="col-md-5">'+
+		        		'<input type="text" class="full-width form-control" >'+
+		        	'</div>'+
+		        	'<div class="clearfix"></div>'+
+	        	'</div>');
+		    $modalBody.appendTo($divModalBody);
+		    $('#'+idModal).modal('show');
+		}
+		else if(queryBuilderMode === 'insert' || queryBuilderMode === 'update'){
+			$modalBody = $('<div class="col-md-12" style="margin-bottom: 10px;">'+
+					'<button class="btn btn-sm btn-primary">'+
+						'<span class="glyphicon glyphicon-plus"></span>'+
+						'Add more'+
+					'</button>'+
+				'</div>');
+		    $modalBody.appendTo($divModalBody);
+		    $('#'+idModal).modal('show');
+		    
+		}
+		*/
+		$('#'+idModal).modal('show');
+		console.log(queryBuilderMode);
+}
 
 

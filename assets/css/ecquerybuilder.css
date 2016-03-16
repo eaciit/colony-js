@@ -1,0 +1,52 @@
+html, body, #container, #container > .row, #sidebar, #content {
+  height: 100%; }
+
+a {
+  cursor: pointer;
+  color: #3A8BDF; }
+  a:hover {
+    color: #4F9AE6; }
+
+.form-datasource .title-command {
+  border-bottom: 1px solid #DDDDDD;
+  width: 100%;
+  text-align: left;
+  padding-bottom: 2px;
+  margin-bottom: 12px; }
+.form-datasource .nav-command {
+  border-right: 1px solid #DDDDDD; }
+  .form-datasource .nav-command .nav li a {
+    padding: 6px 10px;
+    background-color: #FBFBFB;
+    margin-bottom: 3px;
+    border-radius: 4px;
+    border: 1px solid whitesmoke;
+    color: #5F5F5F; }
+    .form-datasource .nav-command .nav li a:hover {
+      background-color: #3A8BDF;
+      color: whitesmoke; }
+.form-datasource .area-command textarea {
+  width: 100%;
+  height: 150px;
+  border: 1px solid #DDDDDD;
+ }
+.form-datasource .area-command ul.token-input-list-facebook {
+  width: 100%;
+  border: 1px solid #DDDDDD;
+  padding: 4px;
+  min-height: 100px; }
+  .form-datasource .area-command ul.token-input-list-facebook .token-input-token-facebook {
+    height: 120px;
+    padding: 2px 5px;
+    background-color: #3A8BDF;
+    color: #FFF;
+    border: 1px solid #3A8BDF; }
+    .form-datasource .area-command ul.token-input-list-facebook .token-input-token-facebook span {
+      color: #FFFFFF; }
+    .form-datasource .area-command ul.token-input-list-facebook .token-input-token-facebook:hover {
+      background-color: white;
+      color: #5F5F5F; }
+      .form-datasource .area-command ul.token-input-list-facebook .token-input-token-facebook:hover span {
+        color: #3A8BDF; }
+
+/*# sourceMappingURL=ecquerybuilder.css.map */
