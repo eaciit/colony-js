@@ -124,11 +124,85 @@ var methodsGrid = {
 			}
 		}
 
+		$taginputPaging = $('<input type="hidden" id="cur_page"/><input type="hidden" id="show_ppage" /><div id="page_nav"></div>');
+		$taginputPaging.appendTo($o);
+
+		//console.log("the option", options.pageable.buttonCount);
+
+		/*paging*/
+		var count = options.pageable.buttonCount
+		makepager = function(page){
+			var show_ppage = count;
+			var num_item = $container.find('.ecgrid tbody>tr').size();
+			var num_page = Math.ceil(num_item / show_ppage);
+			var num_toshow = 4;
+			var nav_html = '';
+			var cur_page = page;
+			var cur_link = (num_toshow >= cur_page ? 1 : num_toshow + 1);
+			if(cur_page > 1)
+				cur_link = cur_page;
+			if(cur_link != 1)
+				nav_html += "<a class='nextbutton' href=\"javascript:first();\">« Start&nbsp;</a>&nbsp;<a class='nextbutton' href=\"javascript:previous();\">« Prev&nbsp;</a>&nbsp;";
+			if(cur_link == num_page - 1)
+				cur_link = cur_link - 3;
+			else if(cur_link == num_page)
+				cur_link = cur_link - 4;
+			else if(cur_link > 2)
+				cur_link = cur_link - 2;
+			else 
+				cur_link = 1;
+			var pages = num_toshow;
+			while(pages != 0){
+				if (num_page < cur_link) { break; }
+				if (cur_link >= 1)
+					nav_html += "<a class='" + ((cur_link == cur_page) ? "currentPageButton" : "numericButton") + "' href=\"javascript:showPage(" + cur_link + ")\" longdesc='" + cur_link + "'>" + (cur_link) + "</a>&nbsp;";
+				cur_link ++;
+				pages--;
+			}
+			if (num_page > cur_page){
+                nav_html += "<a class='nextbutton' href=\"javascript:next()\">Next »</a>&nbsp;<a class='nextbutton' href=\"javascript:last(" + num_page + ");\">Last »</a>";
+            }
+
+            $container.find('#page_nav').html(nav_html);
+		}
+		var pageSize = count;
+		showPage = function (page) {
+            $container.find('.ecgrid tbody>tr').hide();
+            $container.find('#cur_page').val(page);
+            $container.find('.ecgrid tbody>tr').each(function (n) {
+                if (n >= pageSize * (page - 1) && n < pageSize * page)
+                    $(this).show();
+            });
+        	makepager(page);
+       }
+        showPage(1);
+       next = function () {
+            new_page = parseInt($container.find('#cur_page').val()) + 1;
+            showPage(new_page);
+        }
+        last = function (num_page) {
+            new_page = num_page;
+            $container.find('#cur_page').val(new_page);
+            showPage(new_page);
+        }
+        first = function () {
+            var new_page = "1";
+            $container.find('#cur_page').val(new_page);
+            showPage(new_page);    
+      }
+        previous = function () {
+            new_page = parseInt($container.find('#cur_page').val()) - 1;
+            $container.find('#cur_page').val(new_page);
+            showPage(new_page);
+      }
+
+
+
 	},
 	reloadData: function(options){
 
 	},
-}
+}	
 
 $.ecGridSetting = function(element, options){
 
