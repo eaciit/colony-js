@@ -4,4 +4,43 @@
 .ecgrid {
   overflow-y: scroll; }
 
+.numericButton {
+  background-color: #ffffff;
+  color: #666666;
+  border: 1px solid #C9C9C9;
+  display: inline-block;
+  height: 20px;
+  line-height: 14px;
+  min-width: 14px !important;
+  padding: 4px;
+  text-align: center;
+  text-decoration: none; }
+
+.currentPageButton {
+  background-color: #686868;
+  color: #fff !important;
+  border: 1px solid #c9c9c9;
+  display: inline-block;
+  height: 20px;
+  line-height: 14px;
+  min-width: 14px !important;
+  padding: 4px;
+  text-align: center;
+  text-decoration: none; }
+
+.nextbutton {
+  background-color: #ffffff;
+  border: 1px solid #c9c9c9;
+  color: #666666 !important;
+  display: inline-block;
+  height: 20px;
+  line-height: 14px;
+  padding: 4px;
+  text-align: center;
+  text-decoration: none;
+  width: 55px; }
+
+.page_nav {
+  padding-top: 8px; }
+
 /*# sourceMappingURL=ecgrid.css.map */
