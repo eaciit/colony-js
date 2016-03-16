@@ -173,7 +173,6 @@ $.ecGridSetting = function(element, options){
 				info = "<span>"+cur_page+" - "+ num_item+" items</span>";
 			}
 			cur_link ++;
-			console.log(num_page);
 			pages--;
 		}
 		if (num_page > cur_page){
@@ -191,7 +190,6 @@ $.ecGridSetting = function(element, options){
         $container.find('.ecgrid tbody>tr').each(function (n) {
             if (n >= pageSize * (page - 1) && n < pageSize * page)
                 $(this).show();
-            	console.log(page);
         });
     	makepager(page);
 	}
@@ -201,7 +199,6 @@ $.ecGridSetting = function(element, options){
         $container.find('.ecgrid tbody>tr').each(function (n) {
             if (n >= pageSize * (page - 1) && n < pageSize * page)
                 $(this).show();
-            	console.log(n);
         });
     	makepager(page);
 	}
@@ -211,7 +208,6 @@ $.ecGridSetting = function(element, options){
     }
     last = function (num_page) {
         var new_page = num_page;
-        console.log(num_page);
         $container.find('#cur_page').val(new_page);
         $o.data('ecGrid').showPage(new_page);
     }
