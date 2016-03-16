@@ -130,7 +130,7 @@ var methodsGrid = {
 		//console.log("the option", options.pageable.buttonCount);
 
 		/*paging*/
-		var count = options.pageable.buttonCount
+		var count = options.pageable.buttonCount;
 		makepager = function(page){
 			var show_ppage = count;
 			var num_item = $container.find('.ecgrid tbody>tr').size();
@@ -142,7 +142,7 @@ var methodsGrid = {
 			if(cur_page > 1)
 				cur_link = cur_page;
 			if(cur_link != 1)
-				nav_html += "<a class='nextbutton' href=\"javascript:first();\">« Start&nbsp;</a>&nbsp;<a class='nextbutton' href=\"javascript:previous();\">« Prev&nbsp;</a>&nbsp;";
+				nav_html += "<a class='nextbutton' href=\"javascript:first();\">« start&nbsp;</a>&nbsp;<a class='nextbutton' href=\"javascript:previous();\">« prev&nbsp;</a>&nbsp;";
 			if(cur_link == num_page - 1)
 				cur_link = cur_link - 3;
 			else if(cur_link == num_page)
@@ -160,7 +160,7 @@ var methodsGrid = {
 				pages--;
 			}
 			if (num_page > cur_page){
-                nav_html += "<a class='nextbutton' href=\"javascript:next()\">Next »</a>&nbsp;<a class='nextbutton' href=\"javascript:last(" + num_page + ");\">Last »</a>";
+                nav_html += "<a class='nextbutton' href=\"javascript:next()\">next »</a>&nbsp;<a class='nextbutton' href=\"javascript:last(" + num_page + ");\">last »</a>";
             }
 
             $container.find('#page_nav').html(nav_html);
