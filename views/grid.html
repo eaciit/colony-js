@@ -1,6 +1,10 @@
 <div class="col-md-12">
 	<div class="col-md-12" id="gridExample"></div>
 </div>
+<div class="col-md-12">
+	<div class="col-md-12" id="gridExample2"></div>
+</div>
+
 
 <script>
 	$('#gridExample').ecGrid({
@@ -158,9 +162,149 @@
 			{field: "Host", displayTemplateHeader: "<strong> Host & Port</strong>", 
 				displayTemplateRow: function(){
 					return "<label>#*Host#: #*Port#</label>";
-				}
+				},displayTemplateFooter: "Total :"
 			},
-			{field: "_id", title: "_id", displayTemplateFooter: "Total :" },
+			{field: "_id", title: "_id", freeze: true },
+			{field: "",
+				displayTemplateRow: function(){
+					var k =[
+					"<input type='checkbox'/>"
+					].join(" ");
+					return k;
+				}
+			}, 
+
+		],
+		pageable:{
+			refresh: true,
+			buttonCount: 3
+		},
+	});
+
+	$('#gridExample2').ecGrid({
+		dataSource:{
+			data:[{
+			    "ConnectionName": "200_eccolmag",
+			    "Database": "eccolmag",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "8002",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "200_eccolmag"
+			}, 
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "8003",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "8005",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "8802",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "8402",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "8092",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "8022",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "8332",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "3333",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "9202",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			{
+				"ConnectionName": "200_example",
+			    "Database": "ecexample",
+			    "Driver": "mongo",
+			    "Host": "localhost",
+			    "Port": "2000",
+			    "Password": "",
+			    "UserName": "",
+			    "_id": "example"
+			},
+			]
+		}, 
+		columns: [
+			{field: "ConnectionName", title: "Nama koneksi", classHeader: "cobaClass", classFooter: "cobaClass"},
+			{field: "Database", title: "Database", attrColoumn: {type:"db"}},
+			{field: "Driver", title: "Driver"},
+			{field: "Host", displayTemplateHeader: "<strong> Host & Port</strong>", 
+				displayTemplateRow: function(){
+					return "<label>#*Host#: #*Port#</label>";
+				},displayTemplateFooter: "Total :"
+			},
+			{field: "_id", title: "_id", freeze: true },
 			{field: "",
 				displayTemplateRow: function(){
 					var k =[
