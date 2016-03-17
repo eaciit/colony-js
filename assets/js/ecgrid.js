@@ -147,7 +147,7 @@ $.ecGridSetting = function(element, options){
 		var show_ppage = count;
 		var num_item = $container.find('.ecgrid tbody>tr').size();
 		var num_page = Math.ceil(num_item / show_ppage);
-		var num_toshow = 4;
+		var num_toshow = num_item;
 		var nav_html = '';
 		var info ='';
 		var cur_page = page;
@@ -170,7 +170,7 @@ $.ecGridSetting = function(element, options){
 			if (num_page < cur_link) { break; }
 			if (cur_link >= 1){
 				nav_html += "<a class='" + ((cur_link == cur_page) ? "currentPageButton" : "numericButton") + "' href=\"javascript: onshowPage(" + cur_link + ")\" longdesc='" + cur_link + "'>" + (cur_link) + "</a>&nbsp;";
-				info = "<span>"+cur_page+" - "+ num_item+" items</span>";
+				
 			}
 			cur_link ++;
 			pages--;
@@ -181,25 +181,30 @@ $.ecGridSetting = function(element, options){
         }
 
         $container.find('#page_nav').html(nav_html);
-        infoPage(info)
+        
 	}
 	var pageSize = count;
 	this.showPage = function (page) {
-        $container.find('.ecgrid tbody>tr').hide();
-        $container.find('#cur_page').val(page);
-        $container.find('.ecgrid tbody>tr').each(function (n) {
-            if (n >= pageSize * (page - 1) && n < pageSize * page)
-                $(this).show();
-        });
-    	makepager(page);
+        onshowPage(page);
 	}
+	var contain =[];
 	onshowPage = function (page) {
         $container.find('.ecgrid tbody>tr').hide();
         $container.find('#cur_page').val(page);
         $container.find('.ecgrid tbody>tr').each(function (n) {
-            if (n >= pageSize * (page - 1) && n < pageSize * page)
-                $(this).show();
+            if (n >= pageSize * (page - 1) && n < pageSize * page){
+            	$(this).show();
+            	contain.push($container.find('.ecgrid tbody>tr').index($(this))+1);
+            }
+
         });
+        min_tr = Math.min.apply(Math, contain);
+    	max_tr = Math.max.apply(Math, contain);
+    	//console.log("min :"+min_tr+" max :"+max_tr);
+    	var info = "<span>"+min_tr+" - "+max_tr+" of "+$container.find('.ecgrid tbody>tr').size()+" items</span>";
+    	infoPage(info);
+    	contain =[];
+
     	makepager(page);
 	}
 	next = function () {

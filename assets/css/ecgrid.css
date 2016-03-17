@@ -17,8 +17,8 @@
   text-decoration: none; }
 
 .currentPageButton {
-  background-color: #686868;
-  color: #ffffff !important;
+  background-color: #ddd;
+  color: #686868 !important;
   display: inline-block;
   height: 20px;
   line-height: 14px;
@@ -28,7 +28,7 @@
   text-decoration: none; }
 
 .nextbutton {
-  color: #ffffff !important;
+  color: #686868 !important;
   height: 20px;
   text-align: center;
   width: 20px; }
@@ -39,15 +39,12 @@
 .pagination {
   width: 100%;
   padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 0px;
-  border-top: 0px;
-  background-color: rgba(58, 139, 223, 0.52); }
+  border-top: 0px; }
 
 .ecgrid > tbody > tr:nth-child(odd) > td {
   background-color: rgba(58, 139, 230, 0.18); }
-
-.ecgrid > thead {
-  background-color: rgba(58, 139, 223, 0.52); }
 
 .ecgrid tbody tr:hover td {
   background-color: rgba(152, 194, 238, 0.64); }
