@@ -73,18 +73,40 @@ var methodsGrid = {
 	},
 	createElementGrid: function(element, options){
 		$(element).html("");
-		var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id'), columndata = {}, footerTemp = false;
+		var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id'), columndata = {}, footerTemp = false, $divHeadCol, $divRightCol;
 		$o.data('ecGridDataSource').Reload();
 		var records = $o.data('ecGridDataSource').getDataSource();
 
-		$divGrid = $('<table class="table ecgrid table-bordered table-striped"></table>');
-		$divGrid.appendTo($o);
+		$divTable = $("<div class='ecgrid-tbcontainer'></div>");
+		$divTable.appendTo($o);
+
+		// var dataFreeze = $.grep(options.columns, function(e){ 
+		// 	return e.freeze == true; 
+		// });
+		var objfreeze = {};
+		options.columns.map(function (a,b) { 
+			columndata = $.extend({}, Setting_Coloumn, options.columns[b] || {});
+			if (columndata.freeze in objfreeze) objfreeze[columndata.freeze].push(columndata); else objfreeze[columndata.freeze] = [columndata]; } 
+		);
+		console.log(objfreeze);
+		// if (dataFreeze.length > 0){
+		// 	$divHeadCol = $("<div class='ecgrid-headcol'></div>");
+		// 	$divHeadCol.appendTo($o);
+
+		// 	$tablehead = $("<table class='table ecgrid table-bordered table-striped'></table>")
+
+		// 	$divRightCol = $("<div class='ecgrid-rightcol'></div>");
+		// 	$divRightCol.appendTo($o);
+		// }
+
+		$tableElem = $('<table class="table ecgrid table-bordered table-striped"></table>');
+		$tableElem.appendTo($o);
 		$tagHead = $('<thead class="ecgrid-head"></thead>');
-		$tagHead.appendTo($divGrid);
+		$tagHead.appendTo($tableElem);
 		$tagHeadtr = $('<tr></tr>');
 		$tagHeadtr.appendTo($tagHead);
 		$tagbody = $('<tbody class="ecgrid-body"></tbody>');
-		$tagbody.appendTo($divGrid);
+		$tagbody.appendTo($tableElem);
 
 		$tagFoottr = $('<tr></tr>');
 		for (var a = 0; a < options.columns.length; a++){
@@ -104,12 +126,11 @@ var methodsGrid = {
 				$tagHeadth = $('<th>'+columndata.title+'</th>');
 			$tagHeadth.addClass(options.columns[a].classHeader);
 			$tagHeadth.appendTo($tagHeadtr);
-
 		}
 		if (footerTemp){
 			$tagFoot = $('<tfoot></tfoot>');
 			$tagFoottr.appendTo($tagFoot);
-			$tagFoot.appendTo($divGrid);
+			$tagFoot.appendTo($tableElem);
 		}
 
 		var splitElement = "", elementCreate = "";

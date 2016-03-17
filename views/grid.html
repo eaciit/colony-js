@@ -158,9 +158,9 @@
 			{field: "Host", displayTemplateHeader: "<strong> Host & Port</strong>", 
 				displayTemplateRow: function(){
 					return "<label>#*Host#: #*Port#</label>";
-				}
+				},displayTemplateFooter: "Total :"
 			},
-			{field: "_id", title: "_id", displayTemplateFooter: "Total :" },
+			{field: "_id", title: "_id", freeze: true },
 			{field: "",
 				displayTemplateRow: function(){
 					var k =[

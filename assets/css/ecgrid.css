@@ -1,3 +1,9 @@
+.ecgrid-tbcontainer {
+  display: inline-block; }
+
+.ecgrid-rightcol {
+  overflow: auto; }
+
 .ec-gridhead {
   background-color: #F5F5F5; }
 
