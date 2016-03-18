@@ -75,32 +75,81 @@ var methodsGrid = {
 		$(element).html("");
 		var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id'), columndata = {}, footerTemp = false, $divHeadCol, $divRightCol;
 		$o.data('ecGridDataSource').Reload();
-		var records = $o.data('ecGridDataSource').getDataSource();
+		var records = $o.data('ecGridDataSource').getDataSource(), objfreeze = {};
 
 		$divTable = $("<div class='ecgrid-tbcontainer'></div>");
 		$divTable.appendTo($o);
 
-		// var dataFreeze = $.grep(options.columns, function(e){ 
-		// 	return e.freeze == true; 
-		// });
-		var objfreeze = {};
 		options.columns.map(function (a,b) { 
 			columndata = $.extend({}, Setting_Coloumn, options.columns[b] || {});
 			if (columndata.freeze in objfreeze) objfreeze[columndata.freeze].push(columndata); else objfreeze[columndata.freeze] = [columndata]; } 
 		);
-		console.log(objfreeze);
-		// if (dataFreeze.length > 0){
-		// 	$divHeadCol = $("<div class='ecgrid-headcol'></div>");
-		// 	$divHeadCol.appendTo($o);
+		var splitElement = "", elementCreate = "";
+		if (objfreeze.true){
+			$divHeadCol = $("<div class='ecgrid-headcol'></div>");
+			$divHeadCol.appendTo($divTable);
 
-		// 	$tablehead = $("<table class='table ecgrid table-bordered table-striped'></table>")
+			$tablehead = $("<table class='table ecgrid table-bordered table-striped'></table>");
+			$tablehead.appendTo($divHeadCol);
 
-		// 	$divRightCol = $("<div class='ecgrid-rightcol'></div>");
-		// 	$divRightCol.appendTo($o);
-		// }
+			$tagHead = $('<thead class="ecgrid-head"></thead>');
+			$tagHead.appendTo($tablehead);
+			$tagHeadtr = $('<tr></tr>');
+			$tagHeadtr.appendTo($tagHead);
+			$tagFootHeadtr = $('<tr></tr>');
+			for (var a = 0; a < objfreeze.true.length; a++){
+				$tagFoottd = $('<th>&nbsp;</th>');
+				if(objfreeze.true[a].displayTemplateFooter != ""){
+					footerTemp = true;
+					$tagFoottd = $('<th>'+objfreeze.true[a].displayTemplateFooter+'</th>');
+				}
+				$tagFoottd.addClass(objfreeze.true[a].classFooter);
+				$tagFoottd.appendTo($tagFootHeadtr);
+
+				$tagHeadth = $('<th>&nbsp;</th>');
+				if (objfreeze.true[a].displayTemplateHeader != "")
+					$tagHeadth = $('<th>'+objfreeze.true[a].displayTemplateHeader+'</th>');
+				else if (objfreeze.true[a].title != "" && objfreeze.true[a].displayTemplateHeader == "")
+					$tagHeadth = $('<th>'+objfreeze.true[a].title+'</th>');
+				$tagHeadth.addClass(objfreeze.true[a].classHeader);
+				$tagHeadth.css("width", objfreeze.true[a].width);
+				$tagHeadth.appendTo($tagHeadtr);
+			}
+			$tagbody = $('<tbody class="ecgrid-body"></tbody>');
+			$tagbody.appendTo($tablehead);
+
+			for (var i = 0; i < records.length; i++) {
+				$tagRow = $('<tr></tr>');
+				$tagRow.appendTo($tagbody);
+				for( var a = 0; a < objfreeze.true.length; a++){
+					if(objfreeze.true[a].displayTemplateRow() != "" ){
+						splitElement = objfreeze.true[a].displayTemplateRow().split('#'); elementCreate = '';
+						for (var key in splitElement){
+							var res = splitElement[key].substring(0,1);
+							if (res == '*'){
+								elementCreate += records[i][splitElement[key].substring(1,splitElement[key].length)];
+							} else {
+								elementCreate += splitElement[key];
+							}
+						}
+						$tagColoumn = $('<td>'+elementCreate+'</td>');
+					}else{
+						$tagColoumn = $('<td>'+records[i][objfreeze.true[a].field]+'</td>');
+					}
+					$tagColoumn.attr(objfreeze.true[a].attrColoumn);
+					$tagColoumn.appendTo($tagRow);
+				}
+			}
+			$divRightCol = $("<div class='ecgrid-rightcol'></div>");
+			$divRightCol.appendTo($divTable);
+		}
 
 		$tableElem = $('<table class="table ecgrid table-bordered table-striped"></table>');
-		$tableElem.appendTo($o);
+		if (objfreeze.true){
+			$tableElem.appendTo($divRightCol);
+		} else {
+			$tableElem.appendTo($o);
+		}
 		$tagHead = $('<thead class="ecgrid-head"></thead>');
 		$tagHead.appendTo($tableElem);
 		$tagHeadtr = $('<tr></tr>');
@@ -109,38 +158,49 @@ var methodsGrid = {
 		$tagbody.appendTo($tableElem);
 
 		$tagFoottr = $('<tr></tr>');
-		for (var a = 0; a < options.columns.length; a++){
-			columndata = $.extend({}, Setting_Coloumn, options.columns[a] || {});
+		var widthRight = 0;
+		for (var a = 0; a < objfreeze.false.length; a++){
 			$tagFoottd = $('<th>&nbsp;</th>');
-			if(columndata.displayTemplateFooter != ""){
+			if(objfreeze.false[a].displayTemplateFooter != ""){
 				footerTemp = true;
-				$tagFoottd = $('<th>'+columndata.displayTemplateFooter+'</th>');
+				$tagFoottd = $('<th>'+objfreeze.false[a].displayTemplateFooter+'</th>');
 			}
-			$tagFoottd.addClass(options.columns[a].classFooter);
+			$tagFoottd.addClass(objfreeze.false[a].classFooter);
 			$tagFoottd.appendTo($tagFoottr);
 
 			$tagHeadth = $('<th>&nbsp;</th>');
-			if (columndata.displayTemplateHeader != "")
-				$tagHeadth = $('<th>'+columndata.displayTemplateHeader+'</th>');
-			else if (columndata.title != "" && columndata.displayTemplateHeader == "")
-				$tagHeadth = $('<th>'+columndata.title+'</th>');
-			$tagHeadth.addClass(options.columns[a].classHeader);
+			if (objfreeze.false[a].displayTemplateHeader != "")
+				$tagHeadth = $('<th>'+objfreeze.false[a].displayTemplateHeader+'</th>');
+			else if (objfreeze.false[a].title != "" && objfreeze.false[a].displayTemplateHeader == "")
+				$tagHeadth = $('<th>'+objfreeze.false[a].title+'</th>');
+			$tagHeadth.addClass(objfreeze.false[a].classHeader);
+			if (objfreeze.false[a].width != 0)
+				$tagHeadth.css("width", objfreeze.false[a].width);
+			widthRight += objfreeze.false[a].width;
 			$tagHeadth.appendTo($tagHeadtr);
+		}
+		if (widthRight > 0 && objfreeze.true != undefined){
+			$tableElem.css("width",widthRight+'px');
 		}
 		if (footerTemp){
 			$tagFoot = $('<tfoot></tfoot>');
 			$tagFoottr.appendTo($tagFoot);
 			$tagFoot.appendTo($tableElem);
+
+			if (objfreeze.true){
+				$tagFootHead = $('<tfoot></tfoot>');
+				$tagFootHeadtr.appendTo($tagFootHead);
+				$tagFootHead.appendTo($tablehead);
+			}
 		}
 
 		var splitElement = "", elementCreate = "";
 		for (var i = 0; i < records.length; i++) {
 			$tagRow = $('<tr></tr>');
 			$tagRow.appendTo($tagbody);
-			for( var a = 0; a < options.columns.length; a++){
-				columndata = $.extend({}, Setting_Coloumn, options.columns[a] || {});
-				if(columndata.displayTemplateRow() != "" ){
-					splitElement = columndata.displayTemplateRow().split('#'); elementCreate = '';
+			for( var a = 0; a < objfreeze.false.length; a++){
+				if(objfreeze.false[a].displayTemplateRow() != "" ){
+					splitElement = objfreeze.false[a].displayTemplateRow().split('#'); elementCreate = '';
 					for (var key in splitElement){
 						var res = splitElement[key].substring(0,1);
 						if (res == '*'){
@@ -151,22 +211,28 @@ var methodsGrid = {
 					}
 					$tagColoumn = $('<td>'+elementCreate+'</td>');
 				}else{
-					$tagColoumn = $('<td>'+records[i][columndata.field]+'</td>');
+					$tagColoumn = $('<td>'+records[i][objfreeze.false[a].field]+'</td>');
 				}
-				$tagColoumn.attr(columndata.attrColoumn);
+				$tagColoumn.attr(objfreeze.false[a].attrColoumn);
 				$tagColoumn.appendTo($tagRow);
 			}
 		}
+		if (objfreeze.true){
+			$divRightCol.css("height",($tableElem.height()+2)+'px');
+			$o.find('.ecgrid-rightcol table>tbody>tr').each(function( index ) {
+				$o.find('.ecgrid-headcol table>tbody>tr').eq(index).css("height",$(this).height());
+			});
+		}
 
-		$divPagin = $('<div class="pagination"></div>');
-		$taginputPaging = $('<div class="pageleft"><input type="hidden" id="cur_page"/><input type="hidden" id="show_ppage" /><div id="page_nav"></div></div>');
-		$tagInfoPage = $('<div class="pageright"><span class="infopage">nnanana</span></div>')
-		$taginputPaging.appendTo($divPagin);
-		$tagInfoPage.appendTo($divPagin);
-		$divPagin.appendTo($o);
+		// $divPagin = $('<div class="pagination"></div>');
+		// $taginputPaging = $('<div class="pageleft"><input type="hidden" id="cur_page"/><input type="hidden" id="show_ppage" /><div id="page_nav"></div></div>');
+		// $tagInfoPage = $('<div class="pageright"><span class="infopage">nnanana</span></div>')
+		// $taginputPaging.appendTo($divPagin);
+		// $tagInfoPage.appendTo($divPagin);
+		// $divPagin.appendTo($o);
 
-		/*paging*/
-		$o.data('ecGrid').showPage(1);
+		// /*paging*/
+		// $o.data('ecGrid').showPage(1);
 		
 	},
 	reloadData: function(options){
