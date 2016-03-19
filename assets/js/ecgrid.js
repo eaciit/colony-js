@@ -88,7 +88,7 @@ var methodsGrid = {
 			columndata = $.extend({}, Setting_Coloumn, options.columns[b] || {});
 			if (columndata.freeze in objfreeze) objfreeze[columndata.freeze].push(columndata); else objfreeze[columndata.freeze] = [columndata]; } 
 		);
-		console.log(objfreeze);
+		//console.log(objfreeze);
 		// if (dataFreeze.length > 0){
 		// 	$divHeadCol = $("<div class='ecgrid-headcol'></div>");
 		// 	$divHeadCol.appendTo($o);
@@ -99,7 +99,7 @@ var methodsGrid = {
 		// 	$divRightCol.appendTo($o);
 		// }
 
-		$tableElem = $('<table class="table ecgrid table-bordered table-striped"></table>');
+		$tableElem = $('<table class="table ecgrid table-bordered table-striped" id="ecgrid_'+idgrid+'"></table>');
 		$tableElem.appendTo($o);
 		$tagHead = $('<thead class="ecgrid-head"></thead>');
 		$tagHead.appendTo($tableElem);
@@ -159,14 +159,14 @@ var methodsGrid = {
 		}
 
 		$divPagin = $('<div class="pagination"></div>');
-		$taginputPaging = $('<div class="pageleft"><input type="hidden" id="cur_page"/><input type="hidden" id="show_ppage" /><div id="page_nav"></div></div>');
-		$tagInfoPage = $('<div class="pageright"><span class="infopage">nnanana</span></div>')
+		$taginputPaging = $('<div class="pageleft"><input type="hidden" id="cur_page_'+idgrid+'"/><input type="hidden" id="show_ppage_'+idgrid+'" /><div id="page_nav"></div></div>');
+		$tagInfoPage = $('<div class="pageright"><span class="infopage_'+idgrid+'">empty</span></div>')
 		$taginputPaging.appendTo($divPagin);
 		$tagInfoPage.appendTo($divPagin);
 		$divPagin.appendTo($o);
 
 		/*paging*/
-		$o.data('ecGrid').showPage(1);
+		$o.data('ecGrid').onshowPage(1);
 		
 	},
 	reloadData: function(options){
@@ -175,13 +175,15 @@ var methodsGrid = {
 }	
 
 $.ecGridSetting = function(element, options){
-	var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id'), columndata = {}, footerTemp = false;
+	var $o = $(element), $container = $o.parent(), idgrid = element.id;
+	var value = '';
 	var count = options.pageable.buttonCount;
-	makepager = function(page){
+	this.makepager = function(page){
 		var show_ppage = count;
-		var num_item = $container.find('.ecgrid tbody>tr').size();
+		//console.log("numnya",num_item)
+		var num_item = $container.find('#ecgrid_'+idgrid+' tbody>tr').size();
 		var num_page = Math.ceil(num_item / show_ppage);
-		var num_toshow = num_item;
+		var num_toshow =  num_item;
 		var nav_html = '';
 		var info ='';
 		var cur_page = page;
@@ -189,7 +191,7 @@ $.ecGridSetting = function(element, options){
 		if(cur_page > 1)
 			cur_link = cur_page;
 		if(cur_link != 1)
-			nav_html += "<a class='nextbutton' href=\"javascript:first();\"><span class='glyphicon glyphicon-backward'></span></a>&nbsp;<a class='nextbutton' href=\"javascript:previous();\"><span class='glyphicon glyphicon-chevron-left'></span></a>&nbsp;";
+			nav_html += "<a class='nextbutton' id='start' href=''><span class='glyphicon glyphicon-backward'></span></a>&nbsp;<a class='nextbutton' id='prev' href=''><span class='glyphicon glyphicon-chevron-left'></span></a>&nbsp;";
 		if(cur_link == num_page - 1){
 			cur_link = cur_link - 3;
 		}else if(cur_link == num_page){
@@ -198,69 +200,95 @@ $.ecGridSetting = function(element, options){
 		}else{
 			cur_link = 1;
 		}
+		var i = 0;
 		var pages = num_toshow;
 		var $o = $(element)
 		while(pages != 0){
+			
 			if (num_page < cur_link) { break; }
 			if (cur_link >= 1){
-				nav_html += "<a class='" + ((cur_link == cur_page) ? "currentPageButton" : "numericButton") + "' href=\"javascript: onshowPage(" + cur_link + ")\" longdesc='" + cur_link + "'>" + (cur_link) + "</a>&nbsp;";
+				nav_html += "<div class='"+((cur_link == cur_page) ? "currentPageButton" : "numericButton") + "' id='num_' value='"+cur_link+"' longdesc='" + cur_link + "'>" + (cur_link) + "<input type='hidden' name='num"+cur_link+"' id='enum' value='"+cur_link+"'></div>&nbsp;";
+				//console.log($container.find(cur_link).val());
 				
 			}
+			i++;
 			cur_link ++;
 			pages--;
 		}
 		if (num_page > cur_page){
-            nav_html += "<a class='nextbutton' href=\"javascript:next()\"><span class='glyphicon glyphicon-chevron-right'></span></a>&nbsp;<a class='nextbutton' href=\"javascript:last(" + num_page + ");\"><span class='glyphicon glyphicon-forward'></span></a>";
+            nav_html += "<a class='nextbutton' id='next' href=''><span class='glyphicon glyphicon-chevron-right'></span></a>&nbsp;<a class='nextbutton' id='last' href=''><input id='last_num' type='hidden' value='"+num_page+"'><span class='glyphicon glyphicon-forward'></span></a><span id='coba_"+idgrid+"'>lalala</span>";
+            	//console.log('nnum', $('#last_num').val());
             
         }
 
         $container.find('#page_nav').html(nav_html);
+        $container.find("#next").on("click", this.next);
+        $container.find("#start").on("click", this.first);
+        $container.find("#prev").on("click", this.previous);
+        $container.find("#last").on("click", this.last);
+        if(cur_link == cur_page){
+        	$container.find('.currentPageButton').on('click', function(event){
+        		value = $(event.target).text();
+        		$o.data('ecGrid').onshowPage(value);
+        	});
+        }else{
+        	$container.find('.numericButton').on('click',  function(event){
+        		value = $(event.target).text();
+        		$o.data('ecGrid').onshowPage(value);
+
+        	});
+
+        }
         
 	}
 	var pageSize = count;
-	this.showPage = function (page) {
-        onshowPage(page);
+	showPage = function (page) {
+        $o.data('ecGrid').onshowPage(page);
 	}
-	var contain =[];
-	onshowPage = function (page) {
-        $container.find('.ecgrid tbody>tr').hide();
-        $container.find('#cur_page').val(page);
-        $container.find('.ecgrid tbody>tr').each(function (n) {
+	contain =[];
+	this.onshowPage = function (page) {
+       	$container.find('#ecgrid_'+idgrid+' tbody>tr').hide();
+        $container.find('#cur_page_'+idgrid).val(page);
+        console.log($container.find('#cur_page_'+idgrid).val(page));
+       	$container.find('#ecgrid_'+idgrid+' tbody>tr').each(function (n) {
             if (n >= pageSize * (page - 1) && n < pageSize * page){
             	$(this).show();
-            	contain.push($container.find('.ecgrid tbody>tr').index($(this))+1);
+            	contain.push($container.find('#ecgrid_'+idgrid+' tbody>tr').index($(this))+1);
             }
 
         });
-        min_tr = Math.min.apply(Math, contain);
-    	max_tr = Math.max.apply(Math, contain);
-    	//console.log("min :"+min_tr+" max :"+max_tr);
-    	var info = "<span>"+min_tr+" - "+max_tr+" of "+$container.find('.ecgrid tbody>tr').size()+" items</span>";
-    	infoPage(info);
+        this.min_tr = Math.min.apply(Math, contain);
+    	this.max_tr = Math.max.apply(Math, contain);
+    	console.log("min :"+this.min_tr+" max :"+this.max_tr);
+    	this.info = "<span>"+this.min_tr+" - "+this.max_tr+" of "+$container.find('#ecgrid_'+idgrid+' tbody>tr').size()+" items</span>";
+    	$o.data('ecGrid').infoPage(this.info);
     	contain =[];
 
-    	makepager(page);
+    	$o.data('ecGrid').makepager(page);
 	}
-	next = function () {
-        var new_page = parseInt($container.find('#cur_page').val()) + 1;
-        $o.data('ecGrid').showPage(new_page);
+	this.next = function () {
+        var new_page = parseInt($container.find('#cur_page_'+idgrid).val()) + 1;
+        $o.data('ecGrid').onshowPage(new_page);
     }
-    last = function (num_page) {
-        var new_page = num_page;
-        $container.find('#cur_page').val(new_page);
-        $o.data('ecGrid').showPage(new_page);
+    this.last = function () {
+        var new_page = $container.find('#last_num').val();
+        $container.find('#cur_page_'+idgrid).val(new_page);
+        $o.data('ecGrid').onshowPage(new_page);
     }
-    first = function () {
+    this.first = function () {
         var new_page = "1";
-        $container.find('#cur_page').val(new_page);
-        $o.data('ecGrid').showPage(new_page);    
+        $container.find('#cur_page_'+idgrid).val(new_page);
+        $o.data('ecGrid').onshowPage(new_page);    
  	}
-    previous = function () {
-        var new_page = parseInt($container.find('#cur_page').val()) - 1;
-        $container.find('#cur_page').val(new_page);
-        $o.data('ecGrid').showPage(new_page);
+    this.previous= function (options) {
+        var new_page = parseInt($container.find('#cur_page_'+idgrid).val()) - 1;
+        $container.find('#cur_page_'+idgrid).val(new_page);
+        $o.data('ecGrid').onshowPage(new_page);
 	}
-	infoPage = function(info){
-		 $container.find('.infopage').html(info);
+	this.num = function(){
+		alert(value);
+	}
+	this.infoPage = function(info){
+		 $container.find('.infopage_'+idgrid).html(info);
 	}
 }
