@@ -140,68 +140,12 @@ var methodsQueryBuilder = {
 			minHeight: opt.minHeight, 
 		});
 	},
-
-/*	modalShow : function(element,options, queryBuilderMode, id){
-		var $content = $(element);
-		var opt = options.optionModal;
-		var idModal = (opt.idModal == '' ? "modal-"+id : opt.idModal);
-
-		$divInitialModal = $('<div class="modal fade modal-query" tabindex="-1" role="dialog" id="'+idModal+'"></div>');
-		$divInitialModal.appendTo($content);
-		$divInitialDialog = $('<div class="modal-dialog ecquerybuilder-modal"></div>');
-		$divInitialDialog.appendTo($divInitialModal);
-		$divModalContent = $('<div class="modal-content"></div>');
-		$divModalContent.appendTo($divInitialDialog);
-		$divModalHeader = $('<div class="modal-header"></div>');
-		$divModalHeader.appendTo($divModalContent);
-		$divModalBody = $('<div class="modal-body query-of-'+queryBuilderMode+'"></div>');
-		$divModalBody.appendTo($divModalContent);
-		$divModalFooter = $('<div class="modal-footer"></div>');
-		$divModalFooter.appendTo($divModalContent);
-		$header = $(opt.header);
-		$header.appendTo($divModalHeader);
-		$title = $('<h4>Data for <span class="ecquerybuilder-modal-title">'+queryBuilderMode+'</span></h4>');
-		$title.appendTo($divModalHeader);
-		$footer = $(opt.footer);
-		$footer.appendTo($divModalFooter);
-
-		if(queryBuilderMode === 'select'){
-			$modalBody = $('<div class="form-group">'+
-		    		'<label class="col-md-4 filter-label">Fields</label>'+
-		        	'<div class="col-md-5">'+
-		        		'<input type="text" class="full-width form-control" >'+
-		        	'</div>'+
-		        	'<div class="clearfix"></div>'+
-	        	'</div>');
-		    $modalBody.appendTo($divModalBody);
-		    $('#'+idModal).modal('show');
-		}
-		else if(queryBuilderMode === 'insert' || queryBuilderMode === 'update'){
-			$(".modal-body").empty();
-			$modalBody = $('<div class="col-md-12" style="margin-bottom: 10px;">'+
-					'<button class="btn btn-sm btn-primary">'+
-						'<span class="glyphicon glyphicon-plus"></span>'+
-						'Add more'+
-					'</button>'+
-				'</div>');
-		    $modalBody.appendTo($divModalBody);
-		    $('#'+idModal).modal('show');
-		    
-		}
-
-		// $('#'+idModal).on('hidden.bs.modal', function () {
-		//     $(this).modal({show: false});
-		// 	$(".modal-body").empty();
-		// });
-		console.log(queryBuilderMode);
-
-	}*/
 }
 
 $.fn.ecQueryBuilderShowModal = function(element,options, queryBuilderMode, idModal){
 		var $content = $(element);
 		var opt = options.optionModal;
-		var idModal = (opt.idModal == '' ? "modal-"+id : opt.idModal);
+		var idModal = (opt.idModal == '' ? "modal-"+idModal : opt.idModal);
 
 		$divInitialModal = $('<div class="modal fade modal-query" tabindex="-1" role="dialog" id="'+idModal+'"></div>');
 		$divInitialModal.appendTo($content);
