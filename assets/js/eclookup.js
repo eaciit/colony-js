@@ -675,11 +675,12 @@ var methodsLookupDD = {
 			}
 		}).keydown(function(event){
 			var search = $(this).val();
+			var $lo = $container.find(".eclookup-container ul.eclookup-list");
 			switch(event.keyCode) {		
 				case KEY.BACKSPACE:
 					if (search.length == 0){
-						$le = $(".eclookup-item").length - 1;
-						$(".eclookup-item").eq($le).remove();
+						$le = $lo.find("li.eclookup-item").length - 1;
+						$("li.eclookup-item").eq($le).remove();
 						$o.data('ecLookupDD').ParamDataSource.dataSelect.splice(-1,1);
 				    }
 		    	break;
