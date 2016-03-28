@@ -230,17 +230,104 @@ var methodsGrid = {
 				$o.find('.ecgrid-headcol table>tbody>tr').eq(index).css("height",$(this).height());
 			});
 		}
-
-		var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
-		for(var e=0; e< num_page; e++){
-			//$divbutton = $("<div type='button' id='coba' class='btn btn-sm btn-success' value='"+(e+1)+"'>"+(e+1)+"</div>");
-			$divbutton = $('<button  value="'+(e+1)+'">'+(e+1)+'</button>').click(function (event) {
-				value = parseInt($(event.target).text());
+		$input_curr = $('<input type="text" id="cur_page" value="1" hidden>');
+		$input_curr.appendTo($o);
+		if(objfreeze.false.length != options.columns.length){
+			var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
+			$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top: -6px;'></div>");
+			$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
+				value = parseInt($container.find('#cur_page').val())-1;
+				if(parseInt($container.find('#cur_page').val())-1 == 1 || parseInt($container.find('#cur_page').val()) == 0){
+					$container.find('#back').hide();
+					$container.find('#forward').show();
+				}else{
+					$container.find('#back').show();
+					$container.find('#forward').hide();
+				}
+				if(value != 0){
+					$o.data('ecGrid').mark1(dataku, objfreeze, value);
+				}
+				
+			});
+			$divback.appendTo($divbutton);
+			for(var e=0; e< num_page; e++){
+				$buttonpage = $('<li id="num"><a>'+(e+1)+'</a></li>').click(function (event) {
+					$(this).siblings('li').removeClass('active');
+    				$(this).addClass('active');
+					value = parseInt($(event.target).text());
+					if(parseInt($container.find('#cur_page').val())+1 == num_page || value == num_page || value +1 == num_page){
+						$container.find('#forward').hide();
+						$container.find('#back').show();
+					}else{
+						$container.find('#forward').show();
+						$container.find('#back').hide();
+					}
+					$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+				});
+				$buttonpage.appendTo($divbutton);
+				$divbutton.appendTo($o);
+			}
+			$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
+				value = parseInt($container.find('#cur_page').val())+1;
+				if(parseInt($container.find('#cur_page').val())+1 == num_page || parseInt($container.find('#cur_page').val()) == num_page){
+					$container.find('#forward').hide();
+					$container.find('#back').show();
+				}else{
+					$container.find('#forward').show();
+					$container.find('#back').hide();
+				}
 				$o.data('ecGrid').mark1(dataku, objfreeze, value); 
 			});
-			$divbutton.appendTo($o);
-		}
+			$divnext.appendTo($divbutton);
+		}else{
+			var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
+			$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top:20px;'></div>");
+			$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
+				value = parseInt($container.find('#cur_page').val())-1;
+				if(parseInt($container.find('#cur_page').val())-1 == 1 || parseInt($container.find('#cur_page').val()) == 0){
+					$container.find('#back').hide();
+					$container.find('#forward').show();
+				}else{
+					$container.find('#back').show();
+					$container.find('#forward').hide();
+				}
+				if(value != 0){
+					$o.data('ecGrid').mark1(dataku, objfreeze, value);
+				}
+				
+			});
+			$divback.appendTo($divbutton);
+			for(var e=0; e< num_page; e++){
+				$buttonpage = $('<li id="num"><a>'+(e+1)+'</a></li>').click(function (event) {
+					$(this).siblings('li').removeClass('active');
+    				$(this).addClass('active');
+					value = parseInt($(event.target).text());
+					if(  parseInt($container.find('#cur_page').val())+1 == num_page || value == num_page || value +1 == num_page){
+						$container.find('#forward').hide();
+						$container.find('#back').show();
+					}else{
+						$container.find('#forward').show();
+						$container.find('#back').hide();
+					}
+					$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+				});
+				$buttonpage.appendTo($divbutton);
+				$divbutton.appendTo($o);
+			}
+			$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
+				value = parseInt($container.find('#cur_page').val())+1;
+				if(parseInt($container.find('#cur_page').val())+1 == num_page || parseInt($container.find('#cur_page').val()) == num_page){
+					$container.find('#forward').hide();
+					$container.find('#back').show();
+				}else{
+					$container.find('#forward').show();
+					$container.find('#back').hide();
+				}
+				$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+			});
+			$divnext.appendTo($divbutton);
 
+		}
 	},
 	reloadData: function(options){
 
@@ -248,19 +335,18 @@ var methodsGrid = {
 }	
 
 $.ecGridSetting = function(element, options){
-	var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id')
+	var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id');
 	this.num_page
 	this.pageSize = options.pageable.buttonCount;
 	this.mark=function(data, objfreeze, page){
 		var end = this.pageSize * page;
 		var mulai = this.pageSize * (page - 1);
 		var hasil = data.slice(mulai,end);
-		//$container.find('#cur_page_'+idgrid).val(page);
-		//$o.data('ecGrid').makepager(data, page);
 		return hasil;
 	}
 
 	this.mark1=function(data, objfreeze, page){
+		$container.find('#cur_page').val(page);
 		this.el = $container.find('.ecgrid tbody');
 		$container.find(".ecgrid tbody").empty();
 		this.num_page += Math.ceil(data.length / 5);
@@ -347,7 +433,9 @@ $.ecGridSetting = function(element, options){
 					$tagColoumn.appendTo($tagRow);
 				}
 			}
-			$container.find(".ecgrid tbody").css("height",($tableElem.height()+2)+'px');
+			//$container.find(".ecgrid tbody").css("height",($tableElem.height()+2)+'px');
+			$container.find('#paginate').css('margin-top','20px');
+
 			
 		}
 	}
