@@ -10,6 +10,10 @@ $(function() {
 	
 });
 
+// var dataku;
+// var records;
+var coba = '';
+
 var Settings_EcGrid = {
 	serverSide: false,
 	dataSource: {
@@ -75,8 +79,9 @@ var methodsGrid = {
 		$(element).html("");
 		var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id'), columndata = {}, footerTemp = false, $divHeadCol, $divRightCol;
 		$o.data('ecGridDataSource').Reload();
-		var records = $o.data('ecGridDataSource').getDataSource(), objfreeze = {};
-
+		var dataku = $o.data('ecGridDataSource').getDataSource(),  objfreeze = {};
+		var records = $o.data('ecGrid').mark(dataku, objfreeze, 1);
+		
 		$divTable = $("<div class='ecgrid-tbcontainer'></div>");
 		$divTable.appendTo($o);
 
@@ -84,6 +89,7 @@ var methodsGrid = {
 			columndata = $.extend({}, Setting_Coloumn, options.columns[b] || {});
 			if (columndata.freeze in objfreeze) objfreeze[columndata.freeze].push(columndata); else objfreeze[columndata.freeze] = [columndata]; } 
 		);
+	
 		var splitElement = "", elementCreate = "";
 		if (objfreeze.true){
 			$divHeadCol = $("<div class='ecgrid-headcol'></div>");
@@ -150,6 +156,7 @@ var methodsGrid = {
 		} else {
 			$tableElem.appendTo($o);
 		}
+
 		$tagHead = $('<thead class="ecgrid-head"></thead>');
 		$tagHead.appendTo($tableElem);
 		$tagHeadtr = $('<tr></tr>');
@@ -223,17 +230,104 @@ var methodsGrid = {
 				$o.find('.ecgrid-headcol table>tbody>tr').eq(index).css("height",$(this).height());
 			});
 		}
+		$input_curr = $('<input type="text" id="cur_page" value="1" hidden>');
+		$input_curr.appendTo($o);
+		if(objfreeze.false.length != options.columns.length){
+			var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
+			$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top: -6px;'></div>");
+			$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
+				value = parseInt($container.find('#cur_page').val())-1;
+				if(parseInt($container.find('#cur_page').val())-1 == 1 || parseInt($container.find('#cur_page').val()) == 0){
+					$container.find('#back').hide();
+					$container.find('#forward').show();
+				}else{
+					$container.find('#back').show();
+					$container.find('#forward').hide();
+				}
+				if(value != 0){
+					$o.data('ecGrid').mark1(dataku, objfreeze, value);
+				}
+				
+			});
+			$divback.appendTo($divbutton);
+			for(var e=0; e< num_page; e++){
+				$buttonpage = $('<li id="num"><a>'+(e+1)+'</a></li>').click(function (event) {
+					$(this).siblings('li').removeClass('active');
+    				$(this).addClass('active');
+					value = parseInt($(event.target).text());
+					if(parseInt($container.find('#cur_page').val())+1 == num_page || value == num_page || value +1 == num_page){
+						$container.find('#forward').hide();
+						$container.find('#back').show();
+					}else{
+						$container.find('#forward').show();
+						$container.find('#back').hide();
+					}
+					$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+				});
+				$buttonpage.appendTo($divbutton);
+				$divbutton.appendTo($o);
+			}
+			$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
+				value = parseInt($container.find('#cur_page').val())+1;
+				if(parseInt($container.find('#cur_page').val())+1 == num_page || parseInt($container.find('#cur_page').val()) == num_page){
+					$container.find('#forward').hide();
+					$container.find('#back').show();
+				}else{
+					$container.find('#forward').show();
+					$container.find('#back').hide();
+				}
+				$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+			});
+			$divnext.appendTo($divbutton);
+		}else{
+			var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
+			$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top:20px;'></div>");
+			$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
+				value = parseInt($container.find('#cur_page').val())-1;
+				if(parseInt($container.find('#cur_page').val())-1 == 1 || parseInt($container.find('#cur_page').val()) == 0){
+					$container.find('#back').hide();
+					$container.find('#forward').show();
+				}else{
+					$container.find('#back').show();
+					$container.find('#forward').hide();
+				}
+				if(value != 0){
+					$o.data('ecGrid').mark1(dataku, objfreeze, value);
+				}
+				
+			});
+			$divback.appendTo($divbutton);
+			for(var e=0; e< num_page; e++){
+				$buttonpage = $('<li id="num"><a>'+(e+1)+'</a></li>').click(function (event) {
+					$(this).siblings('li').removeClass('active');
+    				$(this).addClass('active');
+					value = parseInt($(event.target).text());
+					if(  parseInt($container.find('#cur_page').val())+1 == num_page || value == num_page || value +1 == num_page){
+						$container.find('#forward').hide();
+						$container.find('#back').show();
+					}else{
+						$container.find('#forward').show();
+						$container.find('#back').hide();
+					}
+					$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+				});
+				$buttonpage.appendTo($divbutton);
+				$divbutton.appendTo($o);
+			}
+			$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
+				value = parseInt($container.find('#cur_page').val())+1;
+				if(parseInt($container.find('#cur_page').val())+1 == num_page || parseInt($container.find('#cur_page').val()) == num_page){
+					$container.find('#forward').hide();
+					$container.find('#back').show();
+				}else{
+					$container.find('#forward').show();
+					$container.find('#back').hide();
+				}
+				$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+			});
+			$divnext.appendTo($divbutton);
 
-		// $divPagin = $('<div class="pagination"></div>');
-		// $taginputPaging = $('<div class="pageleft"><input type="hidden" id="cur_page"/><input type="hidden" id="show_ppage" /><div id="page_nav"></div></div>');
-		// $tagInfoPage = $('<div class="pageright"><span class="infopage">nnanana</span></div>')
-		// $taginputPaging.appendTo($divPagin);
-		// $tagInfoPage.appendTo($divPagin);
-		// $divPagin.appendTo($o);
-
-		// /*paging*/
-		// $o.data('ecGrid').showPage(1);
-		
+		}
 	},
 	reloadData: function(options){
 
@@ -241,92 +335,110 @@ var methodsGrid = {
 }	
 
 $.ecGridSetting = function(element, options){
-	var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id'), columndata = {}, footerTemp = false;
-	var count = options.pageable.buttonCount;
-	makepager = function(page){
-		var show_ppage = count;
-		var num_item = $container.find('.ecgrid tbody>tr').size();
-		var num_page = Math.ceil(num_item / show_ppage);
-		var num_toshow = num_item;
-		var nav_html = '';
-		var info ='';
-		var cur_page = page;
-		var cur_link = (num_toshow >= cur_page ? 1 : num_toshow + 1);
-		if(cur_page > 1)
-			cur_link = cur_page;
-		if(cur_link != 1)
-			nav_html += "<a class='nextbutton' href=\"javascript:first();\"><span class='glyphicon glyphicon-backward'></span></a>&nbsp;<a class='nextbutton' href=\"javascript:previous();\"><span class='glyphicon glyphicon-chevron-left'></span></a>&nbsp;";
-		if(cur_link == num_page - 1){
-			cur_link = cur_link - 3;
-		}else if(cur_link == num_page){
-			cur_link = cur_link - 4;
-		}else if(cur_link > 2){
-		}else{
-			cur_link = 1;
-		}
-		var pages = num_toshow;
-		var $o = $(element)
-		while(pages != 0){
-			if (num_page < cur_link) { break; }
-			if (cur_link >= 1){
-				nav_html += "<a class='" + ((cur_link == cur_page) ? "currentPageButton" : "numericButton") + "' href=\"javascript: onshowPage(" + cur_link + ")\" longdesc='" + cur_link + "'>" + (cur_link) + "</a>&nbsp;";
-				
+	var $o = $(element), $container = $o.parent(), idgrid = $o.attr('id');
+	this.num_page
+	this.pageSize = options.pageable.buttonCount;
+	this.mark=function(data, objfreeze, page){
+		var end = this.pageSize * page;
+		var mulai = this.pageSize * (page - 1);
+		var hasil = data.slice(mulai,end);
+		return hasil;
+	}
+
+	this.mark1=function(data, objfreeze, page){
+		$container.find('#cur_page').val(page);
+		this.el = $container.find('.ecgrid tbody');
+		$container.find(".ecgrid tbody").empty();
+		this.num_page += Math.ceil(data.length / 5);
+		this.cur_link = (5 >= 0 ? 1 : 5 + 1);
+		var end = this.pageSize * page;
+		var mulai = this.pageSize * (page - 1);
+		var hasil = data.slice(mulai,end);
+
+		if(objfreeze.false.length != options.columns.length){
+			var splitElement = "", elementCreate = "";
+			for (var i = 0; i < hasil.length; i++) {
+				$tagRow = $('<tr></tr>');
+				$tagRow.appendTo($container.find(".ecgrid-headcol tbody"));
+				for( var a = 0; a < objfreeze.true.length; a++){
+					if(objfreeze.true[a].displayTemplateRow() != "" ){
+						splitElement = objfreeze.true[a].displayTemplateRow().split('#'); elementCreate = '';
+						for (var key in splitElement){
+							var res = splitElement[key].substring(0,1);
+							if (res == '*'){
+								elementCreate += hasil[i][splitElement[key].substring(1,splitElement[key].length)];
+							} else {
+								elementCreate += splitElement[key];
+							}
+						}
+						$tagColoumn = $('<td>'+elementCreate+'</td>');
+					}else{
+						$tagColoumn = $('<td>'+hasil[i][objfreeze.true[a].field]+'</td>');
+					}
+					$tagColoumn.attr(objfreeze.true[a].attrColoumn);
+					$tagColoumn.appendTo($tagRow);
+				}
 			}
-			cur_link ++;
-			pages--;
+			// $divRightCol = $("<div class='ecgrid-rightcol'></div>");
+			// $divRightCol.appendTo($divTable);
+			
+			for (var i = 0; i < hasil.length; i++) {
+				$tagRow = $('<tr></tr>');
+				$tagRow.appendTo($container.find(".ecgrid-rightcol tbody"));
+				for( var a = 0; a < objfreeze.false.length; a++){
+					if(objfreeze.false[a].displayTemplateRow() != "" ){
+						splitElement = objfreeze.false[a].displayTemplateRow().split('#'); elementCreate = '';
+						for (var key in splitElement){
+							var res = splitElement[key].substring(0,1);
+							if (res == '*'){
+								elementCreate += hasil[i][splitElement[key].substring(1,splitElement[key].length)];
+							} else {
+								elementCreate += splitElement[key];
+							}
+						}
+						$tagColoumn = $('<td>'+elementCreate+'</td>');
+					}else{
+						$tagColoumn = $('<td>'+hasil[i][objfreeze.false[a].field]+'</td>');
+					}
+					$tagColoumn.attr(objfreeze.false[a].attrColoumn);
+					$tagColoumn.appendTo($tagRow);
+				}
+			}
+			if (objfreeze.true){
+				$container.find(".ecgrid-rightcol tbody").css("height",($tableElem.height()+2)+'px');
+				$o.find('.ecgrid-rightcol table>tbody>tr').each(function( index ) {
+					$o.find('.ecgrid-headcol table>tbody>tr').eq(index).css("height",$(this).height());
+				});
+			}
+		}else{
+			for (var i = 0; i < hasil.length; i++) {
+				$tagRow = $('<tr></tr>');
+				$tagRow.appendTo($container.find(".ecgrid tbody"));
+				for( var a = 0; a < objfreeze.false.length; a++){
+					if(objfreeze.false[a].displayTemplateRow() != "" ){
+						splitElement = objfreeze.false[a].displayTemplateRow().split('#'); elementCreate = '';
+						for (var key in splitElement){
+							var res = splitElement[key].substring(0,1);
+							if (res == '*'){
+								elementCreate += hasil[i][splitElement[key].substring(1,splitElement[key].length)];
+							} else {
+								elementCreate += splitElement[key];
+							}
+						}
+						$tagColoumn = $('<td>'+elementCreate+'</td>');
+					}else{
+						$tagColoumn = $('<td>'+hasil[i][objfreeze.false[a].field]+'</td>');
+					}
+					$tagColoumn.attr(objfreeze.false[a].attrColoumn);
+					$tagColoumn.appendTo($tagRow);
+				}
+			}
+			//$container.find(".ecgrid tbody").css("height",($tableElem.height()+2)+'px');
+			$container.find('#paginate').css('margin-top','20px');
+
+			
 		}
-		if (num_page > cur_page){
-            nav_html += "<a class='nextbutton' href=\"javascript:next()\"><span class='glyphicon glyphicon-chevron-right'></span></a>&nbsp;<a class='nextbutton' href=\"javascript:last(" + num_page + ");\"><span class='glyphicon glyphicon-forward'></span></a>";
-            
-        }
+	}
 
-        $container.find('#page_nav').html(nav_html);
-        
-	}
-	var pageSize = count;
-	this.showPage = function (page) {
-        onshowPage(page);
-	}
-	var contain =[];
-	onshowPage = function (page) {
-        $container.find('.ecgrid tbody>tr').hide();
-        $container.find('#cur_page').val(page);
-        $container.find('.ecgrid tbody>tr').each(function (n) {
-            if (n >= pageSize * (page - 1) && n < pageSize * page){
-            	$(this).show();
-            	contain.push($container.find('.ecgrid tbody>tr').index($(this))+1);
-            }
 
-        });
-        min_tr = Math.min.apply(Math, contain);
-    	max_tr = Math.max.apply(Math, contain);
-    	//console.log("min :"+min_tr+" max :"+max_tr);
-    	var info = "<span>"+min_tr+" - "+max_tr+" of "+$container.find('.ecgrid tbody>tr').size()+" items</span>";
-    	infoPage(info);
-    	contain =[];
-
-    	makepager(page);
-	}
-	next = function () {
-        var new_page = parseInt($container.find('#cur_page').val()) + 1;
-        $o.data('ecGrid').showPage(new_page);
-    }
-    last = function (num_page) {
-        var new_page = num_page;
-        $container.find('#cur_page').val(new_page);
-        $o.data('ecGrid').showPage(new_page);
-    }
-    first = function () {
-        var new_page = "1";
-        $container.find('#cur_page').val(new_page);
-        $o.data('ecGrid').showPage(new_page);    
- 	}
-    previous = function () {
-        var new_page = parseInt($container.find('#cur_page').val()) - 1;
-        $container.find('#cur_page').val(new_page);
-        $o.data('ecGrid').showPage(new_page);
-	}
-	infoPage = function(info){
-		 $container.find('.infopage').html(info);
-	}
 }

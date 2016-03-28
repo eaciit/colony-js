@@ -38,8 +38,8 @@ var Setting_QueryBuilder = {
 	widthCommand : 2,
 	widthEditor : 10,
 	command : ["select","insert","update","delete","command","from","where","order","take","skip"],
-	optionEditor : {},
-	optionModal:{},
+	optionEditor : [],
+	optionModal:[],
 }
 
 var Setting_Editor = {
@@ -58,7 +58,6 @@ var Setting_Editor = {
 }
 
 var Setting_ModalQuery = {
-	dataCollection : [],
 	title : 'Data for',
 	header :'<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
 				'<span aria-hidden="true">&times;</span>'+
@@ -96,7 +95,6 @@ var methodsQueryBuilder = {
 		
 		methodsQueryBuilder.createCommandList(element, options, id);
 		methodsQueryBuilder.createEditor(options, id);
-		//console.log(options.optionModal.dataCollection);
 	},
 
 	createCommandList : function(element,options, id){
@@ -142,14 +140,11 @@ var methodsQueryBuilder = {
 			minHeight: opt.minHeight, 
 		});
 	},
-}
 
-$.fn.ecQueryBuilderShowModal = function(element,options, queryBuilderMode, idModal){
+/*	modalShow : function(element,options, queryBuilderMode, id){
 		var $content = $(element);
 		var opt = options.optionModal;
-		var idModal = (opt.idModal == '' ? "modal-"+idModal : opt.idModal);
-
-		$('#'+idModal).remove();
+		var idModal = (opt.idModal == '' ? "modal-"+id : opt.idModal);
 
 		$divInitialModal = $('<div class="modal fade modal-query" tabindex="-1" role="dialog" id="'+idModal+'"></div>');
 		$divInitialModal.appendTo($content);
@@ -170,133 +165,88 @@ $.fn.ecQueryBuilderShowModal = function(element,options, queryBuilderMode, idMod
 		$footer = $(opt.footer);
 		$footer.appendTo($divModalFooter);
 
-		switch(queryBuilderMode){
-			case 'select':
-				$modalBody =  $('<div class="form-group">'+
+		if(queryBuilderMode === 'select'){
+			$modalBody = $('<div class="form-group">'+
 		    		'<label class="col-md-4 filter-label">Fields</label>'+
 		        	'<div class="col-md-5">'+
-		        		'<input type="text" class="full-width form-control input-sm" >'+
+		        		'<input type="text" class="full-width form-control" >'+
 		        	'</div>'+
 		        	'<div class="clearfix"></div>'+
 	        	'</div>');
-	        	$modalBody.appendTo($divModalBody);
-				$('#'+idModal).modal('show');
-	        	break;
-	        case 'insert':
-	        case 'update':
-	        	$modalBody = $('<div class="col-md-12" style="margin-bottom: 10px;">'+
-					'<button class="btn btn-sm btn-success">'+
+		    $modalBody.appendTo($divModalBody);
+		    $('#'+idModal).modal('show');
+		}
+		else if(queryBuilderMode === 'insert' || queryBuilderMode === 'update'){
+			$(".modal-body").empty();
+			$modalBody = $('<div class="col-md-12" style="margin-bottom: 10px;">'+
+					'<button class="btn btn-sm btn-primary">'+
 						'<span class="glyphicon glyphicon-plus"></span>'+
 						'Add more'+
 					'</button>'+
-				'</div>'+
-	        	'<div class="col-md-12">'+
-				    '<div class="form-group">'+
-				        '<label class="col-sm-2 filter-label" style="text-align: right; padding-left: 0px;">Field</label>'+
-	        			'<div class="col-md-3" style="padding-left: 0px;">'+
-	        				'<input required data-required-msg="Field cannot be empty" type="text" class="form-control input-sm full-width" placeholder="Type field here"/>'+
-		        			'<span class="k-invalid-msg"></span>'+
-	        			'</div>'+
-				        '<label class="col-sm-2 filter-label" style="text-align: right; padding-left: 0px;">Value</label>'+
-	        			'<div class="col-md-3" style="padding-left: 0px;">'+
-	        				'<input required data-required-msg="Value cannot be empty" type="text" class="form-control input-sm full-width" placeholder="Type value here"/>'+
-		        			'<span class="k-invalid-msg"></span>'+
-	        			'</div>'+
-	        			'<div class="col-md-1">'+
-							'<button class="btn btn-sm btn-danger">'+
-								'<span class="glyphicon glyphicon-remove"></span>'+
-							'</button>'+
-	        			'</div>'+
-        				'<div class="clearfix"></div>'+
-				    '</div>'+
-	        	'</div>'+
-	        	'<div class="clearfix"></div>');
-	        	$modalBody.appendTo($divModalBody);
-				$('#'+idModal).modal('show');
-	        	break;
-	        case 'from' :
-	        	$modalBody = $('<div class="form-group">'+
-		    		'<label class="col-md-4 filter-label">Table Name</label>'+
-		        	'<div class="col-md-6">'+
-		        		'<select required data-required-msg="Table name cannot be empty" name="query-from" class="form-control input-sm full-width"></select>'+
-		        		'<span class="k-invalid-msg" data-for="query-from"></span>'+
-		        	'</div>'+
-		        	'<div class="clearfix"></div>'+
-	        	'</div>');
-	        	$modalBody.appendTo($divModalBody);
-				$('#'+idModal).modal('show');
-	        	break;
-	        case 'order':
-	        	$modalBody = $('<div class="col-md-12" style="margin-bottom: 10px;">'+
-					'<button class="btn btn-sm btn-success">'+
-						'<span class="glyphicon glyphicon-plus"></span>'+
-						'Add more'+
-					'</button>'+
-				'</div>'+
-	        	'<div class="col-md-12">'+
-					'<table class="table">'+
-						'<thead>'+
-							'<tr>'+
-								'<th>Field</th>'+
-								'<th>Direction</th>'+
-								'<th>&nbsp;</th>'+
-							'</tr>'+
-						'</thead>'+
-						'<tbody class="query-of-order">'+
-							'<tr>'+
-								'<td>'+
-			        				'<select required class="form-control input-sm" data-required-msg="Field cannot be empty"></select>'+
-									'<span class="k-invalid-msg"></span>'+
-								'</td>'+
-								'<td>'+
-			        				'<select required class="form-control input-sm" data-required-msg="Value cannot be empty"></select>'+
-									'<span class="k-invalid-msg"></span>'+
-								'</td>'+
-								'<td>'+
-									'<button class="btn btn-sm btn-danger">'+
-										'<span class="glyphicon glyphicon-remove"></span>'+
-									'</button>'+
-								'</td>'+
-							'</tr>'+
-						'</tbody>'+
-					'</table>'+
-				'</div>'+
-				'<div class="clearfix"></div>');
-				$modalBody.appendTo($divModalBody);
-				$('#'+idModal).modal('show');
-				break;
-			case 'skip':
-			case 'take':
-				$modalBody = $('<div class="form-group">'+
-		    		'<label class="col-md-5 filter-label" style="text-align: right; text-transform: capitalize">Total '+queryBuilderMode+' records</label>'+
-		        	'<div class="col-md-4">'+
-		        		'<input type="text" class="full-width form-control input-sm"/>'+
-		        	'</div>'+
-		        	'<div class="clearfix"></div>'+
-	        	'</div>');
-	        	$modalBody.appendTo($divModalBody);
-				$('#'+idModal).modal('show');
-	        	break;
-	        case 'command':
-	        	$modalBody = $('<div class="col-md-12">'+
-				    '<div class="form-group">'+
-				        '<label class="col-sm-2 filter-label" style="text-align: right; padding-left: 0px;">Command</label>'+
-	        			'<div class="col-md-4" style="padding-left: 0px;">'+
-	        				'<input required data-required-msg="Command cannot be empty" type="text" class="form-control input-sm full-width" placeholder="Type command here"/>'+
-		        			'<span class="k-invalid-msg"></span>'+
-	        			'</div>'+
-				        '<label class="col-sm-2 filter-label" style="text-align: right; padding-left: 0px;">Param</label>'+
-	        			'<div class="col-md-4" style="padding-left: 0px;">'+
-	        				'<input required data-required-msg="Param cannot be empty" type="text" class="form-control input-sm full-width" placeholder="Type param here"/>'+
-		        			'<span class="k-invalid-msg"></span>'+
-	        			'</div>'+
-        				'<div class="clearfix"></div>'+
-				    '</div>'+
-	        	'</div>'+
-	        	'<div class="clearfix"></div>');
-	        	$modalBody.appendTo($divModalBody);
-				$('#'+idModal).modal('show');
-	        	break;
-	        default:
-		}		
+				'</div>');
+		    $modalBody.appendTo($divModalBody);
+		    $('#'+idModal).modal('show');
+		    
+		}
+
+		// $('#'+idModal).on('hidden.bs.modal', function () {
+		//     $(this).modal({show: false});
+		// 	$(".modal-body").empty();
+		// });
+		console.log(queryBuilderMode);
+
+	}*/
 }
+
+$.fn.ecQueryBuilderShowModal = function(element,options, queryBuilderMode, idModal){
+		var $content = $(element);
+		var opt = options.optionModal;
+		var idModal = (opt.idModal == '' ? "modal-"+id : opt.idModal);
+
+		$divInitialModal = $('<div class="modal fade modal-query" tabindex="-1" role="dialog" id="'+idModal+'"></div>');
+		$divInitialModal.appendTo($content);
+		$divInitialDialog = $('<div class="modal-dialog ecquerybuilder-modal"></div>');
+		$divInitialDialog.appendTo($divInitialModal);
+		$divModalContent = $('<div class="modal-content"></div>');
+		$divModalContent.appendTo($divInitialDialog);
+		$divModalHeader = $('<div class="modal-header"></div>');
+		$divModalHeader.appendTo($divModalContent);
+		$divModalBody = $('<div class="modal-body query-of-'+queryBuilderMode+'"></div>');
+		$divModalBody.appendTo($divModalContent);
+		$divModalFooter = $('<div class="modal-footer"></div>');
+		$divModalFooter.appendTo($divModalContent);
+		$header = $(opt.header);
+		$header.appendTo($divModalHeader);
+		$title = $('<h4>Data for <span class="ecquerybuilder-modal-title">'+queryBuilderMode+'</span></h4>');
+		$title.appendTo($divModalHeader);
+		$footer = $(opt.footer);
+		$footer.appendTo($divModalFooter);
+
+/*		if(queryBuilderMode === 'select'){
+			$modalBody = $('<div class="form-group">'+
+		    		'<label class="col-md-4 filter-label">Fields</label>'+
+		        	'<div class="col-md-5">'+
+		        		'<input type="text" class="full-width form-control" >'+
+		        	'</div>'+
+		        	'<div class="clearfix"></div>'+
+	        	'</div>');
+		    $modalBody.appendTo($divModalBody);
+		    $('#'+idModal).modal('show');
+		}
+		else if(queryBuilderMode === 'insert' || queryBuilderMode === 'update'){
+			$modalBody = $('<div class="col-md-12" style="margin-bottom: 10px;">'+
+					'<button class="btn btn-sm btn-primary">'+
+						'<span class="glyphicon glyphicon-plus"></span>'+
+						'Add more'+
+					'</button>'+
+				'</div>');
+		    $modalBody.appendTo($divModalBody);
+		    $('#'+idModal).modal('show');
+		    
+		}
+		*/
+		$('#'+idModal).modal('show');
+		console.log(queryBuilderMode);
+}
+
+
