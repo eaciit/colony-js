@@ -1,14 +1,22 @@
 .ecgrid-tbcontainer {
-  display: inline-block; }
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 100%; }
 
 .ecgrid-rightcol {
-  overflow: auto; }
+  overflow-y: hidden; }
+
+.ecgrid-tbcontainer table {
+  float: left; }
+
+.ecgrid-headcol > .table {
+  width: 0; }
 
 .ec-gridhead {
   background-color: #F5F5F5; }
 
 .ecgrid {
-  overflow-y: scroll;
   margin-bottom: -22px;
   border-radius: 0px; }
 

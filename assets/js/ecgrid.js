@@ -230,104 +230,112 @@ var methodsGrid = {
 				$o.find('.ecgrid-headcol table>tbody>tr').eq(index).css("height",$(this).height());
 			});
 		}
-		$input_curr = $('<input type="text" id="cur_page" value="1" hidden>');
+		$input_curr = $('<input type="text" id="cur_page_'+idgrid+'" value="1" hidden>');
 		$input_curr.appendTo($o);
-		if(objfreeze.false.length != options.columns.length){
-			var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
-			$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top: -6px;'></div>");
-			$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
-				value = parseInt($container.find('#cur_page').val())-1;
-				if(parseInt($container.find('#cur_page').val())-1 == 1 || parseInt($container.find('#cur_page').val()) == 0){
-					$container.find('#back').hide();
-					$container.find('#forward').show();
-				}else{
-					$container.find('#back').show();
-					$container.find('#forward').hide();
-				}
-				if(value != 0){
-					$o.data('ecGrid').mark1(dataku, objfreeze, value);
-				}
+		// if(objfreeze.false.length != options.columns.length){
+		// 	var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
+		// 	$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top: -6px;'></div>");
+		// 	$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
+		// 		value = parseInt($container.find('#cur_page_'+idgrid).val())-1;
+		// 		if(value == 1 || parseInt($container.find('#cur_page_'+idgrid).val()) == 0){
+		// 			$container.find('#back').hide();
+		// 			$container.find('#forward').show();
+		// 		}else{
+		// 			$container.find('#back').show();
+		// 			$container.find('#forward').hide();
+		// 		}
+		// 		if(value != 0){
+		// 			$o.data('ecGrid').mark1(dataku, objfreeze, value);
+		// 		}
 				
-			});
-			$divback.appendTo($divbutton);
-			for(var e=0; e< num_page; e++){
-				$buttonpage = $('<li id="num"><a>'+(e+1)+'</a></li>').click(function (event) {
-					$(this).siblings('li').removeClass('active');
-    				$(this).addClass('active');
-					value = parseInt($(event.target).text());
-					if(parseInt($container.find('#cur_page').val())+1 == num_page || value == num_page || value +1 == num_page){
-						$container.find('#forward').hide();
-						$container.find('#back').show();
-					}else{
-						$container.find('#forward').show();
-						$container.find('#back').hide();
-					}
-					$o.data('ecGrid').mark1(dataku, objfreeze, value); 
-				});
-				$buttonpage.appendTo($divbutton);
-				$divbutton.appendTo($o);
-			}
-			$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
-				value = parseInt($container.find('#cur_page').val())+1;
-				if(parseInt($container.find('#cur_page').val())+1 == num_page || parseInt($container.find('#cur_page').val()) == num_page){
-					$container.find('#forward').hide();
-					$container.find('#back').show();
-				}else{
-					$container.find('#forward').show();
-					$container.find('#back').hide();
-				}
-				$o.data('ecGrid').mark1(dataku, objfreeze, value); 
-			});
-			$divnext.appendTo($divbutton);
-		}else{
-			var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
-			$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top:20px;'></div>");
-			$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
-				value = parseInt($container.find('#cur_page').val())-1;
-				if(parseInt($container.find('#cur_page').val())-1 == 1 || parseInt($container.find('#cur_page').val()) == 0){
-					$container.find('#back').hide();
-					$container.find('#forward').show();
-				}else{
-					$container.find('#back').show();
-					$container.find('#forward').hide();
-				}
-				if(value != 0){
-					$o.data('ecGrid').mark1(dataku, objfreeze, value);
-				}
+		// 	});
+		// 	$divback.appendTo($divbutton);
+		// 	for(var e=0; e< num_page; e++){
+		// 		$buttonpage = $('<li id="num"><a>'+(e+1)+'</a></li>').click(function (event) {
+		// 			$(this).siblings('li').removeClass('active');
+  //   				$(this).addClass('active');
+		// 			value = parseInt($(event.target).text());
+		// 			if(parseInt($container.find('#cur_page_'+idgrid).val())+1 == num_page || value == num_page || value +1 == num_page){
+		// 				$container.find('#forward').hide();
+		// 				$container.find('#back').show();
+		// 			}else{
+		// 				$container.find('#forward').show();
+		// 				$container.find('#back').hide();
+		// 			}
+		// 			$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+		// 		});
+		// 		$buttonpage.appendTo($divbutton);
+		// 		$divbutton.appendTo($o);
+		// 	}
+		// 	$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
+		// 		value = parseInt($container.find('#cur_page_'+idgrid).val())+1;
+		// 		if(parseInt($container.find('#cur_page_'+idgrid).val())+1 == num_page || parseInt($container.find('#cur_page').val()) == num_page){
+		// 			$container.find('#forward').hide();
+		// 			$container.find('#back').show();
+		// 		}else{
+		// 			$container.find('#forward').show();
+		// 			$container.find('#back').hide();
+		// 		}
+		// 		$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+		// 	});
+		// 	$divnext.appendTo($divbutton);
+		// }else{
+		// 	var nomor = 0;
+		// 	var num_page = Math.ceil(dataku.length/options.pageable.buttonCount);
+		// 	$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top:20px;'></div>");
+		// 	$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
+		// 		value = parseInt($container.find('#cur_page_'+idgrid).val())-1;
+		// 		if(value == 1 || parseInt($container.find('#cur_page_'+idgrid).val()) == 0){
+		// 			$container.find('#back').hide();
+		// 			$container.find('#forward').show();
+		// 		}else{
+		// 			$container.find('#back').show();
+		// 			$container.find('#forward').hide();
+		// 		}
+		// 		if(value != 0){
+		// 			$o.data('ecGrid').mark1(dataku, objfreeze, value);
+		// 		}
 				
-			});
-			$divback.appendTo($divbutton);
-			for(var e=0; e< num_page; e++){
-				$buttonpage = $('<li id="num"><a>'+(e+1)+'</a></li>').click(function (event) {
-					$(this).siblings('li').removeClass('active');
-    				$(this).addClass('active');
-					value = parseInt($(event.target).text());
-					if(  parseInt($container.find('#cur_page').val())+1 == num_page || value == num_page || value +1 == num_page){
-						$container.find('#forward').hide();
-						$container.find('#back').show();
-					}else{
-						$container.find('#forward').show();
-						$container.find('#back').hide();
-					}
-					$o.data('ecGrid').mark1(dataku, objfreeze, value); 
-				});
-				$buttonpage.appendTo($divbutton);
-				$divbutton.appendTo($o);
-			}
-			$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
-				value = parseInt($container.find('#cur_page').val())+1;
-				if(parseInt($container.find('#cur_page').val())+1 == num_page || parseInt($container.find('#cur_page').val()) == num_page){
-					$container.find('#forward').hide();
-					$container.find('#back').show();
-				}else{
-					$container.find('#forward').show();
-					$container.find('#back').hide();
-				}
-				$o.data('ecGrid').mark1(dataku, objfreeze, value); 
-			});
-			$divnext.appendTo($divbutton);
+		// 	});
+		// 	$divback.appendTo($divbutton);
+		// 	for(var e=0; e< num_page; e++){
+		// 		$buttonpage = $('<li id="num"><a>'+(e+1)+'</a></li>').click(function (event) {
+		// 			//nomor = (e+1);
+		// 			$(this).siblings('li').removeClass('active');
+  //   				$(this).addClass('active');
+		// 			value = parseInt($(event.target).text());
+		// 			nomor = value;
+		// 			if(  parseInt($container.find('#cur_page_'+idgrid).val())+1 == num_page || value == num_page || value +1 == num_page){
+		// 				$container.find('#forward').hide();
+		// 				$container.find('#back').show();
+		// 			}else{
+		// 				$container.find('#forward').show();
+		// 				$container.find('#back').hide();
+		// 			}
+		// 			$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+		// 		});
+		// 		$buttonpage.appendTo($divbutton);
+		// 		$divbutton.appendTo($o);
+		// 		nomor++;
+		// 		console.log("nomor------", nomor);
+		// 	}
+		// 	$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
+		// 		value = parseInt($container.find('#cur_page_'+idgrid).val())+1;
+		// 		if(value == num_page || parseInt($container.find('#cur_page_'+idgrid).val()) == num_page){
+		// 			$container.find('#forward').hide();
+		// 			$container.find('#back').show();
+		// 		}else{
+		// 			$container.find('#forward').show();
+		// 			$container.find('#back').hide();
+		// 		}
+		// 		$o.data('ecGrid').mark1(dataku, objfreeze, value); 
+		// 	});
+		// 	$divnext.appendTo($divbutton);
 
-		}
+		// }
+
+		var page = parseInt($container.find('#cur_page_'+idgrid).val());
+		$o.data('ecGrid').pageMaker(dataku, objfreeze, page);
 	},
 	reloadData: function(options){
 
@@ -339,6 +347,7 @@ $.ecGridSetting = function(element, options){
 	this.num_page
 	this.pageSize = options.pageable.buttonCount;
 	this.mark=function(data, objfreeze, page){
+		//$o.data('ecGrid').pageMaker(data, objfreeze, page);
 		var end = this.pageSize * page;
 		var mulai = this.pageSize * (page - 1);
 		var hasil = data.slice(mulai,end);
@@ -346,7 +355,7 @@ $.ecGridSetting = function(element, options){
 	}
 
 	this.mark1=function(data, objfreeze, page){
-		$container.find('#cur_page').val(page);
+		$container.find('#cur_page_'+idgrid).val(page);
 		this.el = $container.find('.ecgrid tbody');
 		$container.find(".ecgrid tbody").empty();
 		this.num_page += Math.ceil(data.length / 5);
@@ -435,9 +444,80 @@ $.ecGridSetting = function(element, options){
 			}
 			//$container.find(".ecgrid tbody").css("height",($tableElem.height()+2)+'px');
 			$container.find('#paginate').css('margin-top','20px');
-
-			
 		}
+		//$o.data('ecGrid').pageMaker(data, objfreeze, page);
+	}
+
+	this.pageMaker = function(data, objfreeze, page){
+		console.log("pagenya ----", page);
+		if(objfreeze.false.length != options.columns.length){
+			$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top: -6px;'></div>");
+		}else{
+			$divbutton = $("<div class='pagination pagination-sm' id='paginate' style='margin-top:20px;'></div>");	
+		}
+		$divback = $('<li id="back"><a class="glyphicon glyphicon-step-backward" style="margin-top:-1px;"></a></li>').click(function (event) {
+			value = parseInt($container.find('#cur_page_'+idgrid).val())-1;
+			$o.data('ecGrid').back(num_page, value, data, objfreeze);
+		});
+		$divback.appendTo($divbutton);
+		var no = page - 1;
+		console.log("------ *1",no);
+		var num_page = Math.ceil(data.length/options.pageable.buttonCount);
+		for(var e = no; e< 5+no; e++){
+			if(e+1 == num_page+1){break;}
+			$buttonpage = $('<li id="'+(e+1)+'"><a>'+(e+1)+'</a></li>').click(function (event) {
+				$container.find("#"+page).addClass('active');
+				value = parseInt($(event.target).text());
+				$o.data('ecGrid').number(num_page, value, data, objfreeze);
+				$container.find('#paginate').remove();
+				$o.data('ecGrid').pageMaker(data, objfreeze, value);
+				
+			});
+			$buttonpage.appendTo($divbutton);
+			$divbutton.appendTo($o);
+		}
+
+		$divnext = $('<li id="forward"><a class="glyphicon glyphicon-step-forward" style="margin-top:-1px;"></a></li>').click(function (event) {
+			value = parseInt($container.find('#cur_page_'+idgrid).val())+1;
+			$o.data('ecGrid').next(num_page, value, data, objfreeze);
+		});
+		$divnext.appendTo($divbutton);
+		
+	}
+
+	this.back = function(num_page, value, data, objfreeze){
+		if(value == 1 || parseInt($container.find('#cur_page_'+idgrid).val()) == 0){
+			$container.find('#back').hide();
+			$container.find('#forward').show();
+		}else{
+			$container.find('#back').show();
+			$container.find('#forward').hide();
+		}
+		if(value != 0){
+			$o.data('ecGrid').mark1(data, objfreeze, value);
+		}		
+	}
+
+	this.next = function(num_page, value, data, objfreeze){
+		if(value == num_page || parseInt($container.find('#cur_page_'+idgrid).val()) == num_page){
+			$container.find('#forward').hide();
+			$container.find('#back').show();
+		}else{
+			$container.find('#forward').show();
+			$container.find('#back').hide();
+		}
+		$o.data('ecGrid').mark1(data, objfreeze, value); 
+	}
+
+	this.number = function(num_page, value, data, objfreeze){
+		if(  parseInt($container.find('#cur_page_'+idgrid).val())+1 == num_page || value == num_page || value +1 == num_page){
+			$container.find('#forward').hide();
+			$container.find('#back').show();
+		}else{
+			$container.find('#forward').show();
+			$container.find('#back').hide();
+		}
+		$o.data('ecGrid').mark1(data, objfreeze, value); 
 	}
 
 
