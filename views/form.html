@@ -1,0 +1,70 @@
+<!-- kendo-ui -->
+<link href="/res/js/kendo-ui/styles/kendo.default.min.css" rel="stylesheet">
+<link href="/res/js/kendo-ui/styles/kendo.common-bootstrap.min.css" rel="stylesheet">
+<link href="/res/js/kendo-ui/styles/kendo.bootstrap.min.css" rel="stylesheet">
+<link href="/res/js/kendo-ui/styles/kendo.dataviz.min.css" rel="stylesheet">
+<link href="/res/js/kendo-ui/styles/kendo.dataviz.bootstrap.min.css" rel="stylesheet">
+<script src="/res/js/kendo-ui/js/kendo.all.min.js"></script>
+
+<script src="/res/js/ecform.js"></script>
+<link rel="stylesheet" href="/res/css/ecform.css" />
+
+<div class="col-md-12">
+	<div class="col-md-6">
+		<div id="exampleform"></div>
+	</div>
+	<div class="col-md-12">
+		<button class="btn btn-sm btn-primary" id="btngetdata">Get Data</button>
+	</div>
+</div>
+
+<script>
+	$("#btngetdata").on("click",function(){
+		var dataresult = $('#exampleform').ecForm("getData");
+		console.log(dataresult);
+	});
+
+	$('#exampleform').ecForm({
+		title: "",
+		widthPerColumn: 12,
+		metadata: [
+			{
+				"name": "area_color",
+				"title": "Area Color",
+				"type": "text",
+				"value": "#B3ECFF",		
+			},
+			{
+				"name": "title",
+				"title": "Title",
+				"type": "text",
+				"value": "Example Widget 1",		
+			},
+			{
+				"name": "title_align",
+				"title": "Title Align",
+				"type": "dropdown",
+				"data": "left,right",
+				"value": "right",		
+			},
+			{
+				"name": "pagesize",
+				"title": "Page Size",
+				"type": "number",
+				"value": "2",		
+			},
+			{
+				"name": "filterable",
+				"title": "Filter",
+				"type": "bool",
+				"value": true,		
+			},
+			{
+				"name": "columnMenu",
+				"title": "Column Menu",
+				"type": "bool",
+				"value": false,		
+			},
+		]
+	});
+</script>
