@@ -66,3 +66,11 @@ func (c *ColonyController) QueryBuilder(r *knot.WebContext) interface{} {
 
 	return true
 }
+
+func (c *ColonyController) Form(r *knot.WebContext) interface{} {
+	r.Config.OutputType = knot.OutputTemplate
+	r.Config.LayoutTemplate = LayoutFile
+	r.Config.ViewName = "views/form.html"
+
+	return true
+}
